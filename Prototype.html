@@ -1,0 +1,4020 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAWI TestFlow — OIML R-76 Platform</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        :root {
+            --bg: #f4f6f9;
+            --panel: #ffffff;
+            --border: #e1e6ed;
+            --text: #172033;
+            --muted: #697586;
+            --primary: #175cd3;
+            --primary-dark: #1246a6;
+            --success: #079455;
+            --warning: #dc6803;
+            --danger: #d92d20;
+            --info: #026aa2;
+            --sidebar: #101828;
+        }
+
+        body {
+            font-family: Inter, Segoe UI, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        button,
+        input,
+        select,
+        textarea {
+            font: inherit
+        }
+
+        .app {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 250px;
+            background: var(--sidebar);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .logo {
+            padding: 22px 20px;
+            border-bottom: 1px solid #263246;
+        }
+
+        .logo-title {
+            font-size: 19px;
+            font-weight: 800;
+        }
+
+        .logo-sub {
+            color: #98a2b3;
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        .nav {
+            padding: 18px 12px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .nav-section {
+            color: #667085;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 10px 12px;
+        }
+
+        .nav-item {
+            padding: 12px;
+            margin: 3px 0;
+            border-radius: 7px;
+            color: #cfd5df;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            gap: 11px;
+            align-items: center;
+            transition: all 0.15s ease;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: #1d2939;
+            color: white;
+        }
+
+        .nav-item.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .user {
+            padding: 15px;
+            border-top: 1px solid #263246;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #162235;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            background: #175cd3;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .user-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .user-info b {
+            display: block;
+            font-size: 12px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user small {
+            color: #98a2b3;
+            font-size: 10px;
+            display: block;
+        }
+
+        .switch-user-btn {
+            background: transparent;
+            border: 1px solid #344054;
+            color: #98a2b3;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            margin-top: 4px;
+        }
+
+        .switch-user-btn:hover {
+            color: white;
+            border-color: #667085;
+        }
+
+        /* MAIN */
+        .main {
+            flex: 1;
+            overflow: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .topbar {
+            height: 70px;
+            background: white;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            flex-shrink: 0;
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 11px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: #fff;
+            font-size: 12px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+        }
+
+        .dot.orange {
+            background: var(--warning)
+        }
+
+        .dot.red {
+            background: var(--danger)
+        }
+
+        .role-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .role-badge.tech {
+            background: #eff8ff;
+            color: #175cd3;
+            border: 1px solid #b2ddff;
+        }
+
+        .role-badge.manager {
+            background: #fffaeb;
+            color: #b54708;
+            border: 1px solid #fedf89;
+        }
+
+        .role-badge.admin {
+            background: #fef3f2;
+            color: #b42318;
+            border: 1px solid #fecdca;
+        }
+
+        .role-badge.auditor {
+            background: #f8fafc;
+            color: #475467;
+            border: 1px solid #eaecf0;
+        }
+
+        .content {
+            padding: 28px;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+            flex: 1;
+        }
+
+        .screen {
+            display: none
+        }
+
+        .screen.active {
+            display: block
+        }
+
+        /* COMMON */
+        h1 {
+            font-size: 27px
+        }
+
+        h2 {
+            font-size: 18px
+        }
+
+        h3 {
+            font-size: 15px
+        }
+
+        .muted {
+            color: var(--muted)
+        }
+
+        .small {
+            font-size: 12px
+        }
+
+        .btn {
+            border: 1px solid var(--border);
+            background: white;
+            padding: 9px 14px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.15s ease;
+        }
+
+        .btn:hover {
+            background: #f9fafb
+        }
+
+        .btn.primary {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .btn.primary:hover {
+            background: var(--primary-dark)
+        }
+
+        .btn.success {
+            background: #ecfdf3;
+            border-color: #abefc6;
+            color: #067647;
+        }
+
+        .btn.success:hover {
+            background: #d1fad3
+        }
+
+        .btn.danger {
+            background: #fff1f0;
+            border-color: #fecdca;
+            color: #b42318;
+        }
+
+        .btn.danger:hover {
+            background: #fee4e2
+        }
+
+        .btn.sm {
+            padding: 5px 9px;
+            font-size: 11px;
+            border-radius: 5px;
+        }
+
+        .btn[disabled],
+        .btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 18px;
+        }
+
+        .grid {
+            display: grid;
+            gap: 18px;
+        }
+
+        .grid4 {
+            grid-template-columns: repeat(4, 1fr)
+        }
+
+        .grid3 {
+            grid-template-columns: repeat(3, 1fr)
+        }
+
+        .grid2 {
+            grid-template-columns: repeat(2, 1fr)
+        }
+
+        .section-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .badge.green {
+            background: #ecfdf3;
+            color: #067647
+        }
+
+        .badge.orange {
+            background: #fffaeb;
+            color: #b54708
+        }
+
+        .badge.red {
+            background: #fef3f2;
+            color: #b42318
+        }
+
+        .badge.blue {
+            background: #eff8ff;
+            color: #175cd3
+        }
+
+        .badge.gray {
+            background: #f2f4f7;
+            color: #475467
+        }
+
+        /* DASHBOARD */
+        .hero {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .hero p {
+            margin-top: 6px
+        }
+
+        .kpi {
+            padding: 18px;
+            margin-bottom: 0;
+        }
+
+        .kpi-label {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .kpi-value {
+            font-size: 27px;
+            font-weight: 800;
+            margin-top: 7px;
+        }
+
+        .kpi-footer {
+            margin-top: 8px;
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #667085;
+            padding: 11px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 13px 11px;
+            border-bottom: 1px solid #eef1f5;
+            font-size: 13px;
+        }
+
+        .progress {
+            height: 7px;
+            background: #eaecf0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        /* WIZARD */
+        .wizard {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 22px;
+        }
+
+        .step {
+            flex: 1;
+            background: white;
+            border: 1px solid var(--border);
+            padding: 13px;
+            border-radius: 8px;
+            font-size: 12px;
+        }
+
+        .step.active {
+            border-color: #84adff;
+            background: #eff6ff;
+            color: #175cd3;
+        }
+
+        .step.done {
+            background: #ecfdf3;
+            color: #067647;
+        }
+
+        .instrument-card {
+            cursor: pointer;
+            border: 2px solid var(--border);
+            transition: .2s;
+            margin-bottom: 15px;
+        }
+
+        .instrument-card:hover,
+        .instrument-card.selected {
+            border-color: var(--primary);
+            background: #f8fbff;
+        }
+
+        .instrument-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .specs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .spec {
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 7px;
+        }
+
+        .spec span {
+            display: block;
+            color: var(--muted);
+            font-size: 10px;
+            margin-bottom: 4px;
+        }
+
+        .spec strong {
+            font-size: 13px
+        }
+
+        /* SEQUENCE */
+        .sequence {
+            max-width: 850px;
+        }
+
+        .sequence-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            border: 1px solid var(--border);
+            background: white;
+            margin-bottom: 8px;
+            border-radius: 8px;
+        }
+
+        .sequence-num {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #eef4ff;
+            color: var(--primary);
+            display: grid;
+            place-items: center;
+            font-weight: 800;
+        }
+
+        .sequence-arrow {
+            color: #98a2b3;
+            font-size: 18px;
+        }
+
+        /* TEST WORKSPACE */
+        .test-layout {
+            display: grid;
+            grid-template-columns: 220px 1fr 310px;
+            gap: 18px;
+        }
+
+        .test-index {
+            position: sticky;
+            top: 0;
+        }
+
+        .index-item {
+            display: flex;
+            gap: 10px;
+            padding: 12px;
+            border-radius: 7px;
+            cursor: pointer;
+            margin: 4px 0;
+            font-size: 12px;
+        }
+
+        .index-item.active {
+            background: #eff6ff;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .index-item.done {
+            color: var(--success)
+        }
+
+        .index-num {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #f2f4f7;
+            display: grid;
+            place-items: center;
+            font-size: 10px;
+        }
+
+        .index-item.active .index-num {
+            background: var(--primary);
+            color: white;
+        }
+
+        .test-main {
+            min-width: 0;
+        }
+
+        .test-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .reading-card {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .obs-label {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .digital {
+            font-family: "Courier New", monospace;
+            font-size: 52px;
+            font-weight: 800;
+            margin: 15px 0 4px;
+            letter-spacing: 2px;
+            background: #0f172a;
+            color: #22c55e;
+            padding: 10px 20px;
+            border-radius: 8px;
+            display: inline-block;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+        }
+
+        .unit {
+            font-size: 16px;
+            color: var(--muted);
+        }
+
+        .source {
+            display: inline-block;
+            margin-top: 12px;
+        }
+
+        .connection-card {
+            border-top: 4px solid var(--success);
+        }
+
+        .connection-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 15px 0;
+        }
+
+        .port-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .field label {
+            display: block;
+            color: var(--muted);
+            font-size: 10px;
+            margin-bottom: 5px;
+        }
+
+        .field input,
+        .field select,
+        .field textarea {
+            width: 100%;
+            padding: 9px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: white;
+        }
+
+        /* INDEX */
+        .obs-index {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+            margin: 14px 0;
+        }
+
+        .obs {
+            width: 38px;
+            height: 38px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            display: grid;
+            place-items: center;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .obs.complete {
+            background: #ecfdf3;
+            color: #067647;
+            border-color: #abefc6;
+        }
+
+        .obs.current {
+            background: #eff6ff;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            font-weight: 800;
+        }
+
+        .obs.anomaly {
+            background: #fff7ed;
+            color: #b54708;
+            border-color: #fed7aa;
+        }
+
+        /* ANOMALY */
+        .anomaly {
+            border-left: 4px solid var(--warning);
+            background: #fffbf5;
+        }
+
+        .anomaly-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #b54708;
+            font-weight: 800;
+        }
+
+        .anomaly-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #f79009;
+            color: white;
+            display: grid;
+            place-items: center;
+        }
+
+        /* CALCULATION */
+        .result-number {
+            font-size: 25px;
+            font-weight: 800;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .metric {
+            background: #f8fafc;
+            border-radius: 7px;
+            padding: 13px;
+        }
+
+        .metric span {
+            color: var(--muted);
+            font-size: 10px;
+            display: block;
+        }
+
+        .metric strong {
+            display: block;
+            margin-top: 5px;
+        }
+
+        /* MODALS & OVERLAYS */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(3px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background: white;
+            border-radius: 12px;
+            max-width: 650px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border);
+        }
+
+        .modal-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+            background: #f8fafc;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* USER ROLE LOGIN SWITCHER MODAL */
+        .user-option-card {
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 14px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .user-option-card:hover {
+            border-color: var(--primary);
+            background: #f8fbff;
+        }
+
+        /* TOAST CONTAINERS */
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            background: #101828;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 8px;
+            font-size: 13px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease;
+        }
+
+        .toast.success {
+            border-left: 4px solid var(--success);
+        }
+
+        .toast.error {
+            border-left: 4px solid var(--danger);
+        }
+
+        .toast.warning {
+            border-left: 4px solid var(--warning);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* ECCENTRICITY PLATFORM STYLES */
+        .platform-container {
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 480px;
+            margin: 0 auto 20px;
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.03);
+        }
+
+        .platform-title {
+            text-align: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .platform-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 1fr 1fr 1fr;
+            gap: 12px;
+            height: 220px;
+        }
+
+        .pos-btn {
+            border: 2px dashed var(--border);
+            background: white;
+            border-radius: 8px;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .pos-btn:hover {
+            border-color: var(--primary);
+            background: #f0f7ff;
+        }
+
+        .pos-btn.active {
+            border: 2px solid var(--primary);
+            background: #eff6ff;
+            color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(23, 92, 211, 0.2);
+        }
+
+        .pos-btn.recorded {
+            border: 2px solid #abefc6;
+            background: #ecfdf3;
+            color: #067647;
+        }
+
+        .pos-btn.center {
+            grid-column: 2;
+            grid-row: 2;
+        }
+
+        .pos-btn.top-left {
+            grid-column: 1;
+            grid-row: 1;
+        }
+
+        .pos-btn.top-right {
+            grid-column: 3;
+            grid-row: 1;
+        }
+
+        .pos-btn.bot-right {
+            grid-column: 3;
+            grid-row: 3;
+        }
+
+        .pos-btn.bot-left {
+            grid-column: 1;
+            grid-row: 3;
+        }
+
+        .pos-label {
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .pos-val {
+            font-size: 13px;
+            font-weight: 700;
+            margin-top: 3px;
+        }
+
+        /* WEIGHING PERFORMANCE STEP BUTTONS */
+        .load-steps-bar {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            margin-bottom: 18px;
+        }
+
+        .step-chip {
+            padding: 8px 14px;
+            border: 1px solid var(--border);
+            background: white;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.15s ease;
+        }
+
+        .step-chip:hover {
+            border-color: var(--primary);
+        }
+
+        .step-chip.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            font-weight: 700;
+        }
+
+        .step-chip.done {
+            background: #ecfdf3;
+            color: #067647;
+            border-color: #abefc6;
+        }
+
+        .sub-view {
+            display: none;
+        }
+
+        .sub-view.active {
+            display: block;
+        }
+
+        /* PRINT CERTIFICATE STYLES */
+        @media print {
+
+            .sidebar,
+            .topbar,
+            .wizard,
+            .btn,
+            .top-actions {
+                display: none !important;
+            }
+
+            .main {
+                overflow: visible !important;
+            }
+
+            .content {
+                padding: 0 !important;
+            }
+
+            .modal-overlay {
+                position: static;
+                background: none;
+                opacity: 1;
+                pointer-events: auto;
+            }
+
+            .modal-card {
+                width: 100% !important;
+                max-width: 100% !important;
+                box-shadow: none !important;
+                border: none !important;
+            }
+
+            .modal-header,
+            .modal-footer {
+                display: none !important;
+            }
+        }
+
+        /* RESPONSIVE */
+        @media(max-width:1200px) {
+            .test-layout {
+                grid-template-columns: 190px 1fr
+            }
+
+            .test-layout>.right-panel {
+                grid-column: 1/-1
+            }
+        }
+
+        @media(max-width:900px) {
+            .sidebar {
+                width: 70px
+            }
+
+            .logo-title,
+            .logo-sub,
+            .nav-section,
+            .nav-item span,
+            .user-info {
+                display: none
+            }
+
+            .grid4 {
+                grid-template-columns: repeat(2, 1fr)
+            }
+
+            .test-layout {
+                grid-template-columns: 1fr
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+
+            <div class="logo">
+                <div class="logo-title">⚖ NAWI TestFlow</div>
+                <div class="logo-sub">OIML R-76 TEST PLATFORM</div>
+            </div>
+
+            <nav class="nav">
+
+                <div class="nav-section">Workspace</div>
+
+                <div class="nav-item active" data-screen="dashboard" onclick="navigateTo('dashboard',this)">
+                    <b>▦</b><span>Dashboard</span>
+                </div>
+
+                <div class="nav-item" data-screen="instrument" onclick="navigateTo('instrument',this)">
+                    <b>⚖</b><span>Instruments</span>
+                </div>
+
+                <div class="nav-item" data-screen="sequence" onclick="navigateTo('sequence',this)">
+                    <b>▶</b><span>New Test</span>
+                </div>
+
+                <div class="nav-item" data-screen="test" onclick="navigateTo('test',this)">
+                    <b>◎</b><span>Active Tests</span>
+                </div>
+
+                <div class="nav-item" data-screen="reports" onclick="navigateTo('reports',this)">
+                    <b>▤</b><span>Reports</span>
+                </div>
+
+                <div class="nav-section">Administration</div>
+
+                <div class="nav-item" data-screen="customers" onclick="navigateTo('customers',this)">
+                    <b>◈</b><span>Customers</span>
+                </div>
+
+                <div class="nav-item" data-screen="rules" onclick="navigateTo('rules',this)">
+                    <b>⚙</b><span>Rules & Standards</span>
+                </div>
+
+                <div class="nav-item" data-screen="audit" onclick="navigateTo('audit',this)">
+                    <b>◷</b><span>Audit Trail</span>
+                </div>
+
+            </nav>
+
+            <div class="user">
+                <div class="avatar" id="userAvatar">KS</div>
+                <div class="user-info">
+                    <b id="userNameDisplay">Karthikeyan S</b>
+                    <small id="userRoleDisplay">Laboratory Technician</small>
+                    <button class="switch-user-btn" onclick="openLoginModal()">Switch Role ⇄</button>
+                </div>
+            </div>
+
+        </aside>
+
+
+        <!-- MAIN -->
+        <main class="main">
+
+            <header class="topbar">
+                <div class="page-title" id="pageTitleDisplay">Dashboard</div>
+
+                <div class="top-actions">
+
+                    <div id="roleBadgeHeader" class="role-badge tech">Technician</div>
+
+                    <div class="status">
+                        <span class="dot" id="networkDot"></span>
+                        <span id="networkText">Online Mode</span>
+                    </div>
+
+                    <div class="status">
+                        <span class="dot" id="scaleDot"></span>
+                        <span id="scaleStatusText">Scale Connected</span>
+                    </div>
+
+                    <button class="btn primary" onclick="startNewTestWizard()">
+                        + Start New Test
+                    </button>
+
+                    <button class="btn sm" title="Reset all demo data back to default state" onclick="resetDemoData()">
+                        ↺ Reset Data
+                    </button>
+
+                </div>
+            </header>
+
+
+            <div class="content">
+
+
+                <!-- ================= DASHBOARD ================= -->
+
+                <section id="dashboard" class="screen active">
+
+                    <div class="hero">
+                        <div>
+                            <h1 id="welcomeHeading">Welcome, Technician</h1>
+                            <p class="muted">Manage NAWI testing, observations and compliance reports with OIML R-76
+                                standard.</p>
+                        </div>
+
+                        <button class="btn primary" onclick="startNewTestWizard()">
+                            + Start New Test
+                        </button>
+                    </div>
+
+
+                    <div class="grid grid4">
+
+                        <div class="card kpi">
+                            <div class="kpi-label">Active Tests</div>
+                            <div class="kpi-value" id="kpiActiveCount">2</div>
+                            <div class="kpi-footer" id="kpiActiveSub">+1 started today</div>
+                        </div>
+
+                        <div class="card kpi">
+                            <div class="kpi-label">Completed Today</div>
+                            <div class="kpi-value" id="kpiCompletedCount">3</div>
+                            <div class="kpi-footer">Local records saved</div>
+                        </div>
+
+                        <div class="card kpi">
+                            <div class="kpi-label">Pending Reports</div>
+                            <div class="kpi-value" id="kpiPendingCount">1</div>
+                            <div class="kpi-footer">Ready for manager sign-off</div>
+                        </div>
+
+                        <div class="card kpi">
+                            <div class="kpi-label">Instruments Registered</div>
+                            <div class="kpi-value" id="kpiInstrumentsCount">3</div>
+                            <div class="kpi-footer">Ready for testing</div>
+                        </div>
+
+                    </div>
+
+
+                    <br>
+
+                    <div class="grid grid2">
+
+                        <div class="card">
+
+                            <div class="section-head">
+                                <h2>Active Tests</h2>
+                                <button class="btn sm" onclick="navigateTo('test')">View Active Workspace</button>
+                            </div>
+
+                            <table>
+
+                                <thead>
+                                    <tr>
+                                        <th>Test ID</th>
+                                        <th>Instrument</th>
+                                        <th>Test Type</th>
+                                        <th>Progress</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="dashboardActiveTestsTbody">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+
+                        <div class="card">
+
+                            <div class="section-head">
+                                <h2>Recent Activity</h2>
+                                <button class="btn sm" onclick="navigateTo('audit')">View Audit Log</button>
+                            </div>
+
+                            <div id="recentActivityList" style="line-height:2.3;font-size:13px">
+                                <!-- Populated dynamically -->
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ================= INSTRUMENT ================= -->
+
+                <section id="instrument" class="screen">
+
+                    <div class="section-head">
+                        <div>
+                            <h1>Select Instrument</h1>
+                            <p class="muted" style="margin-top:4px">
+                                Select the weighing instrument to begin a guided OIML R-76 test or register a new scale.
+                            </p>
+                        </div>
+                        <button class="btn primary" onclick="openAddInstrumentModal()" id="addInstrumentBtn">
+                            + Register New Instrument
+                        </button>
+                    </div>
+
+                    <div class="wizard">
+                        <div class="step active"><b>01</b> Select Instrument</div>
+                        <div class="step"><b>02</b> Test Sequence</div>
+                        <div class="step"><b>03</b> Test Workspace</div>
+                        <div class="step"><b>04</b> Compliance</div>
+                        <div class="step"><b>05</b> Report</div>
+                    </div>
+
+
+                    <div id="instrumentListContainer">
+                        <!-- Rendered dynamically -->
+                    </div>
+
+
+                    <div style="margin-top:20px;display:flex;justify-content:flex-end">
+
+                        <button class="btn primary" onclick="proceedToSequence()">
+                            Continue to Sequence →
+                        </button>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ================= SEQUENCE ================= -->
+
+                <section id="sequence" class="screen">
+
+                    <h1>Recommended Test Sequence</h1>
+
+                    <p class="muted" style="margin:6px 0 20px">
+                        The system suggests a guided sequence based on selected instrument specs (<span
+                            id="seqInstrumentName">NAWI-1042</span>) and configured OIML R-76 test rules.
+                    </p>
+
+
+                    <div class="card sequence">
+
+                        <div class="badge blue" style="margin-bottom:15px">
+                            Intelligent Test Sequence (OIML R-76)
+                        </div>
+
+
+                        <div id="sequenceItemsList">
+                            <!-- Dynamically populated -->
+                        </div>
+
+
+                        <div class="card" style="margin-top:18px;background:#f8fafc">
+
+                            <b>Why this sequence?</b>
+
+                            <p class="small muted" style="margin-top:7px;line-height:1.7">
+                                The sequence standard enforces initial verification of scale parameters and zero
+                                stability before executing repeatability and eccentricity checks. Technician
+                                observations are calculated live against Maximum Permissible Error (MPE) thresholds.
+                            </p>
+
+                        </div>
+
+
+                        <div style="display:flex;gap:10px;margin-top:18px">
+
+                            <button class="btn" onclick="openCustomizeSequenceModal()">
+                                ⚙ Customize Sequence
+                            </button>
+
+                            <button class="btn primary" onclick="acceptAndStartTest()">
+                                Accept & Start Test →
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ================= TEST WORKSPACE ================= -->
+
+                <section id="test" class="screen">
+
+                    <div class="test-header">
+
+                        <div>
+                            <h1 id="activeTestTitle">Repeatability Test</h1>
+                            <p class="muted" id="activeTestSub">
+                                TST-2026-084 · NAWI-1042 · OIML R-76 Class III
+                            </p>
+                        </div>
+
+                        <div style="display:flex;gap:8px;align-items:center">
+
+                            <span class="badge green" id="scaleLiveBadge">
+                                ● Scale Stream Live
+                            </span>
+
+                            <span class="badge blue">
+                                Offline Capable
+                            </span>
+
+                            <button class="btn primary sm" onclick="finishCurrentTest()">
+                                ✔ Finish Test & Generate Report
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="test-layout">
+
+
+                        <!-- TEST INDEX -->
+
+                        <div class="card test-index">
+
+                            <h3 style="margin-bottom:10px">TEST INDEX</h3>
+
+                            <div id="testIndexList">
+                                <!-- Dynamically populated -->
+                            </div>
+
+                        </div>
+
+
+                        <!-- MAIN TEST -->
+
+                        <div class="test-main">
+
+                            <!-- 01 VERIFICATION SUB-VIEW -->
+                            <div id="subView-verification" class="sub-view">
+                                <div class="card">
+                                    <div class="section-head">
+                                        <div>
+                                            <h2 id="currentStepTitle">01. Instrument & Environmental Verification</h2>
+                                            <p class="muted small" id="currentStepDesc">
+                                                Verify scale levelling, markings, warm-up, and environmental controls
+                                                (OIML R-76 Clause 3.1).
+                                            </p>
+                                        </div>
+                                        <span class="badge green">VERIFIED</span>
+                                    </div>
+
+                                    <div class="grid grid2" style="margin-top:15px">
+                                        <div class="spec" style="background:#fff;border:1px solid var(--border)">
+                                            <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
+                                                <input type="checkbox" id="chkLevel" checked
+                                                    style="width:18px;height:18px">
+                                                <div>
+                                                    <b>Level Bubble Centered</b>
+                                                    <div class="small muted">Scale physically levelled on stable,
+                                                        vibration-free bench</div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div class="spec" style="background:#fff;border:1px solid var(--border)">
+                                            <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
+                                                <input type="checkbox" id="chkPlates" checked
+                                                    style="width:18px;height:18px">
+                                                <div>
+                                                    <b>Data Plate & Markings</b>
+                                                    <div class="small muted">Max, Min, e, d, and Serial No clearly
+                                                        legible and intact</div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div class="spec" style="background:#fff;border:1px solid var(--border)">
+                                            <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
+                                                <input type="checkbox" id="chkWarmup" checked
+                                                    style="width:18px;height:18px">
+                                                <div>
+                                                    <b>Warm-Up Time Met</b>
+                                                    <div class="small muted">Powered on for ≥ 30 mins prior to
+                                                        metrological testing</div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div class="spec" style="background:#fff;border:1px solid var(--border)">
+                                            <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
+                                                <input type="checkbox" id="chkEnv" checked
+                                                    style="width:18px;height:18px">
+                                                <div>
+                                                    <b>Environmental Controls</b>
+                                                    <div class="small muted">Ambient temp 21.5°C; draft protection
+                                                        active</div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div style="margin-top:20px;display:flex;justify-content:flex-end">
+                                        <button class="btn primary" onclick="switchSubTest('zeroTare')">
+                                            Save & Continue to Zero/Tare Test →
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <!-- 02 ZERO & TARE SUB-VIEW -->
+                            <div id="subView-zeroTare" class="sub-view">
+                                <div class="card">
+                                    <div class="section-head">
+                                        <div>
+                                            <h2>02. Zero-Setting & Tare Device Performance</h2>
+                                            <p class="muted small">
+                                                Verify initial zero setting (E₀ ≤ ± 0.25 e) and net indication tare
+                                                balancing (OIML R-76 Clause 3.8).
+                                            </p>
+                                        </div>
+                                        <span class="badge green" id="zeroTareStatusBadge">PASS</span>
+                                    </div>
+
+                                    <div class="grid grid2" style="margin-top:15px">
+                                        <div class="card" style="background:#f8fafc;margin:0">
+                                            <h3>Initial Zero-Setting Test</h3>
+                                            <p class="small muted" style="margin:5px 0 15px">Allowed error limit: ≤ ±
+                                                0.25 e (± 0.0025 kg)</p>
+                                            <div class="digital" style="font-size:32px" id="zeroDisplay">0.000</div>
+                                            <div style="margin-top:15px;display:flex;gap:10px">
+                                                <button class="btn primary sm" onclick="verifyZeroSetting()">⚡ Test Zero
+                                                    Accuracy</button>
+                                            </div>
+                                            <div style="margin-top:12px" id="zeroResultBox">
+                                                <span class="badge green">Zero Error: +0.001 kg (PASS)</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="card" style="background:#f8fafc;margin:0">
+                                            <h3>Tare Balancing Operation</h3>
+                                            <p class="small muted" style="margin:5px 0 15px">Apply Tare load and verify
+                                                Net = Gross - Tare</p>
+                                            <div style="display:flex;gap:8px;align-items:center">
+                                                <label class="small muted">Tare Load:</label>
+                                                <select id="tareLoadSelect" style="padding:4px 8px;font-weight:700">
+                                                    <option value="5.000">5.000 kg</option>
+                                                    <option value="10.000">10.000 kg</option>
+                                                </select>
+                                            </div>
+                                            <div style="margin-top:15px;display:flex;gap:10px">
+                                                <button class="btn success sm" onclick="verifyTareBalancing()">⚡ Apply
+                                                    Tare & Verify Net</button>
+                                            </div>
+                                            <div style="margin-top:12px" id="tareResultBox">
+                                                <span class="badge green">Gross: 15.000 kg | Tare: 5.000 kg | Net:
+                                                    10.000 kg (PASS)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div style="margin-top:20px;display:flex;justify-content:flex-end">
+                                        <button class="btn primary" onclick="switchSubTest('repeatability')">
+                                            Continue to Repeatability Test →
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <!-- 03 REPEATABILITY SUB-VIEW -->
+                            <div id="subView-repeatability" class="sub-view active">
+                                <div class="card">
+                                    <div class="section-head">
+                                        <div>
+                                            <h2>03. Repeatability Test (Clause 3.6.1)</h2>
+                                            <p class="muted small">
+                                                Record 10 repeated indications for the configured target load under
+                                                constant conditions.
+                                            </p>
+                                        </div>
+                                        <span class="badge blue" id="obsCounter">Observation 07 / 10</span>
+                                    </div>
+
+                                    <div class="card reading-card">
+                                        <div class="obs-label">TARGET LOAD</div>
+                                        <div
+                                            style="margin-top:5px;display:flex;align-items:center;justify-content:center;gap:8px">
+                                            <select id="targetLoadSelect"
+                                                style="font-weight:700;font-size:16px;padding:4px 8px"
+                                                onchange="onTargetLoadChange(this.value)">
+                                                <option value="10.000">10.000 kg</option>
+                                                <option value="20.000">20.000 kg</option>
+                                                <option value="30.000">30.000 kg</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="obs-label" style="margin-top:20px">CURRENT SCALE READING</div>
+                                        <div class="digital" id="reading">10.085</div>
+                                        <div class="unit">kg</div>
+
+                                        <span class="badge orange source" id="readingSourceBadge">⚡ Captured via
+                                            RS-232</span>
+                                        <div class="small muted" style="margin-top:8px" id="readingTimestamp">Timestamp:
+                                            10:31:42</div>
+
+                                        <div
+                                            style="display:flex;justify-content:center;gap:10px;margin-top:22px;flex-wrap:wrap">
+                                            <button class="btn primary" onclick="captureReading()" id="captureBtn">⚡
+                                                Capture Reading</button>
+                                            <button class="btn" onclick="manualReading()" id="manualBtn">✎ Manual
+                                                Entry</button>
+                                            <button class="btn success" onclick="toggleAutoStream()" id="streamBtn">▶
+                                                Auto-Stream Scale</button>
+                                        </div>
+                                    </div>
+
+                                    <div style="margin-top:18px">
+                                        <div class="section-head">
+                                            <h3>Observation Grid</h3>
+                                            <span class="small muted" id="obsGridSummary">6 completed · 1 anomaly · 3
+                                                remaining</span>
+                                        </div>
+                                        <div class="obs-index" id="obsGridBoxes"></div>
+                                    </div>
+
+                                    <div class="card anomaly" id="anomalyBox">
+                                        <div class="anomaly-title">
+                                            <div class="anomaly-icon">!</div>
+                                            Client-Side Anomaly Flagged
+                                        </div>
+                                        <p class="small" style="margin-top:10px" id="anomalyText">
+                                            Reading <b>10.085 kg</b> is outside expected tolerance for 10.000 kg load.
+                                        </p>
+                                        <div style="display:flex;gap:8px;margin-top:13px;flex-wrap:wrap">
+                                            <button class="btn danger" onclick="reviewAnomaly()">Review Anomaly</button>
+                                            <button class="btn" onclick="retakeObservation()">Retake
+                                                Observation</button>
+                                            <button class="btn success" onclick="acceptReading()">Accept
+                                                Reading</button>
+                                        </div>
+                                    </div>
+
+                                    <div class="card" style="margin-top:18px">
+                                        <div class="section-head">
+                                            <h3>Captured Observations</h3>
+                                            <span class="badge blue">Frontend Validated</span>
+                                        </div>
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Target</th>
+                                                    <th>Observed</th>
+                                                    <th>Difference</th>
+                                                    <th>Source</th>
+                                                    <th>Status</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="observationsTbody"></tbody>
+                                        </table>
+                                    </div>
+
+                                    <div style="margin-top:20px;display:flex;justify-content:flex-end">
+                                        <button class="btn primary" onclick="switchSubTest('eccentricity')">
+                                            Continue to Eccentricity Test →
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <!-- 04 ECCENTRICITY SUB-VIEW -->
+                            <div id="subView-eccentricity" class="sub-view">
+                                <div class="card">
+                                    <div class="section-head">
+                                        <div>
+                                            <h2>04. Eccentricity / Off-Center Loading Test (Clause 3.6.2)</h2>
+                                            <p class="muted small">
+                                                Evaluate scale indications when load (~1/3 Max = 10.000 kg) is shifted
+                                                to center and 4 corners.
+                                            </p>
+                                        </div>
+                                        <span class="badge green" id="eccStatusBadge">PASS</span>
+                                    </div>
+
+                                    <div class="grid grid2" style="margin-top:15px">
+                                        <div>
+                                            <div class="platform-container">
+                                                <div class="platform-title">⚖ Scale Load Receptor (Platform Top View)
+                                                </div>
+                                                <div class="platform-grid">
+                                                    <div class="pos-btn top-left" id="posBtn2"
+                                                        onclick="selectEccentricityPos(2)">
+                                                        <span class="pos-label">Corner 1</span>
+                                                        <span class="pos-val" id="posVal2">10.003</span>
+                                                    </div>
+                                                    <div class="pos-btn top-right" id="posBtn3"
+                                                        onclick="selectEccentricityPos(3)">
+                                                        <span class="pos-label">Corner 2</span>
+                                                        <span class="pos-val" id="posVal3">10.002</span>
+                                                    </div>
+                                                    <div class="pos-btn center active" id="posBtn1"
+                                                        onclick="selectEccentricityPos(1)">
+                                                        <span class="pos-label">Center</span>
+                                                        <span class="pos-val" id="posVal1">10.001</span>
+                                                    </div>
+                                                    <div class="pos-btn bot-left" id="posBtn5"
+                                                        onclick="selectEccentricityPos(5)">
+                                                        <span class="pos-label">Corner 4</span>
+                                                        <span class="pos-val" id="posVal5">10.002</span>
+                                                    </div>
+                                                    <div class="pos-btn bot-right" id="posBtn4"
+                                                        onclick="selectEccentricityPos(4)">
+                                                        <span class="pos-label">Corner 3</span>
+                                                        <span class="pos-val" id="posVal4">10.004</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <div class="card reading-card" style="margin:0">
+                                                <div class="obs-label" id="eccActivePosLabel">ACTIVE LOCATION: POS 1
+                                                    (CENTER)</div>
+                                                <div class="digital" id="eccReadingDisplay">10.001</div>
+                                                <div class="unit">kg</div>
+                                                <div
+                                                    style="display:flex;justify-content:center;gap:10px;margin-top:18px;flex-wrap:wrap">
+                                                    <button class="btn primary" onclick="captureEccentricityReading()">⚡
+                                                        Capture Corner Reading</button>
+                                                    <button class="btn" onclick="manualEccentricityReading()">✎ Manual
+                                                        Entry</button>
+                                                </div>
+                                            </div>
+                                            <div
+                                                style="margin-top:15px;background:#f8fafc;padding:12px;border-radius:8px;border:1px solid var(--border)">
+                                                <small class="muted">Max Eccentricity Deviation (Δecc vs Center)</small>
+                                                <div style="font-size:22px;font-weight:800;color:var(--primary)"
+                                                    id="eccMaxDevDisplay">0.003 kg</div>
+                                                <div class="small muted" style="margin-top:4px">OIML MPE Limit: ± 0.015
+                                                    kg (1.5 e)</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div style="margin-top:20px">
+                                        <h3>Eccentricity Observations Table</h3>
+                                        <table style="margin-top:10px">
+                                            <thead>
+                                                <tr>
+                                                    <th>Pos #</th>
+                                                    <th>Location Name</th>
+                                                    <th>Target Load</th>
+                                                    <th>Observed</th>
+                                                    <th>Diff vs Center</th>
+                                                    <th>Status</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="eccentricityTbody"></tbody>
+                                        </table>
+                                    </div>
+
+                                    <div style="margin-top:20px;display:flex;justify-content:flex-end">
+                                        <button class="btn primary" onclick="switchSubTest('weighing')">
+                                            Continue to Weighing Performance Test →
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <!-- 05 WEIGHING PERFORMANCE SUB-VIEW -->
+                            <div id="subView-weighing" class="sub-view">
+                                <div class="card">
+                                    <div class="section-head">
+                                        <div>
+                                            <h2>05. Weighing Performance (Linearity, Accuracy & Hysteresis)</h2>
+                                            <p class="muted small">
+                                                Measure indication error E = I - L for Increasing & Decreasing loads
+                                                across capacity range (OIML R-76 Clause 3.5.1).
+                                            </p>
+                                        </div>
+                                        <span class="badge green" id="weighingStatusBadge">PASS</span>
+                                    </div>
+
+                                    <div class="load-steps-bar" id="weighingStepChips"></div>
+
+                                    <div class="card reading-card">
+                                        <div class="obs-label" id="weighingActiveStepLabel">ACTIVE TEST STEP: STEP 1
+                                            (0.200 kg INCREASING)</div>
+                                        <div class="digital" id="weighingReadingDisplay">0.200</div>
+                                        <div class="unit">kg</div>
+                                        <div
+                                            style="display:flex;justify-content:center;gap:10px;margin-top:18px;flex-wrap:wrap">
+                                            <button class="btn primary" onclick="captureWeighingReading()">⚡ Capture
+                                                Step Reading</button>
+                                            <button class="btn" onclick="manualWeighingReading()">✎ Manual
+                                                Entry</button>
+                                        </div>
+                                    </div>
+
+                                    <div style="margin-top:20px">
+                                        <h3>Load Step Performance Table</h3>
+                                        <table style="margin-top:10px">
+                                            <thead>
+                                                <tr>
+                                                    <th>Step</th>
+                                                    <th>Load Point</th>
+                                                    <th>Direction</th>
+                                                    <th>Target</th>
+                                                    <th>Observed</th>
+                                                    <th>Error (E = I - L)</th>
+                                                    <th>MPE Limit</th>
+                                                    <th>Status</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="weighingTbody"></tbody>
+                                        </table>
+                                    </div>
+
+                                    <div style="margin-top:20px;display:flex;justify-content:flex-end">
+                                        <button class="btn primary" onclick="switchSubTest('report')">
+                                            Proceed to Final Test Summary →
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <!-- 06 FINAL REPORT SUB-VIEW -->
+                            <div id="subView-report" class="sub-view">
+                                <div class="card">
+                                    <div class="section-head">
+                                        <div>
+                                            <h2>06. Final Verification Summary & Certificate Generation</h2>
+                                            <p class="muted small">Review all test module evaluations against OIML R-76
+                                                metrological rules.</p>
+                                        </div>
+                                        <span class="badge green" style="font-size:14px;padding:6px 12px">SUITE
+                                            VERIFIED</span>
+                                    </div>
+
+                                    <div class="grid grid2" style="margin-top:15px">
+                                        <div class="card" style="background:#f8fafc">
+                                            <h3>Test Module Summary Checklist</h3>
+                                            <table style="margin-top:10px">
+                                                <tr>
+                                                    <td>01. Hardware & Environment Verification</td>
+                                                    <td><span class="badge green">PASS</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>02. Zero-Setting & Tare Device</td>
+                                                    <td><span class="badge green">PASS</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>03. Repeatability Test (Clause 3.6.1)</td>
+                                                    <td><span class="badge green" id="sumRepBadge">PASS</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>04. Eccentricity Test (Clause 3.6.2)</td>
+                                                    <td><span class="badge green" id="sumEccBadge">PASS</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>05. Weighing Performance (Clause 3.5.1)</td>
+                                                    <td><span class="badge green" id="sumWeighBadge">PASS</span></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+
+                                        <div class="card"
+                                            style="background:#f8fafc;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center">
+                                            <div style="font-size:13px" class="muted">OVERALL COMPLIANCE DECISION</div>
+                                            <div
+                                                style="font-size:36px;font-weight:900;color:var(--success);margin:10px 0">
+                                                PASS</div>
+                                            <p class="small muted">Instrument complies with OIML R-76 Class III
+                                                verification tolerances.</p>
+                                            <button class="btn primary" style="margin-top:15px"
+                                                onclick="finishCurrentTest()">✔ Finish Test & View Certificate</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <!-- RIGHT PANEL -->
+
+                        <div class="right-panel">
+
+                            <div class="card connection-card">
+
+                                <div class="section-head">
+                                    <h3>WEIGHING SCALE</h3>
+                                    <span class="badge green">Connected</span>
+                                </div>
+
+                                <p class="small muted">
+                                    Serial / Web Serial Integration
+                                </p>
+
+                                <div class="connection-status">
+
+                                    <b>RS-232 Serial</b>
+
+                                    <span style="color:var(--success);font-weight:700" id="portLiveLabel">
+                                        ● LIVE
+                                    </span>
+
+                                </div>
+
+
+                                <div class="port-grid">
+
+                                    <div class="field">
+                                        <label>PORT</label>
+                                        <select id="portSelect">
+                                            <option>COM3</option>
+                                            <option>COM4</option>
+                                            <option>USB-SERIAL0</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="field">
+                                        <label>BAUD RATE</label>
+                                        <select id="baudSelect">
+                                            <option>9600</option>
+                                            <option>4800</option>
+                                            <option>19200</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="field">
+                                        <label>DATA BITS</label>
+                                        <select>
+                                            <option>8</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="field">
+                                        <label>PARITY</label>
+                                        <select>
+                                            <option>None</option>
+                                        </select>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="card" style="margin-top:15px;text-align:center;background:#f8fafc">
+
+                                    <small class="muted">LAST SCALE READING</small>
+
+                                    <div style="font-size:27px;font-weight:800;margin-top:5px"
+                                        id="lastScaleReadingDisplay">
+                                        10.001 kg
+                                    </div>
+
+                                </div>
+
+
+                                <div style="display:flex;gap:8px;margin-top:12px">
+
+                                    <button class="btn" style="flex:1"
+                                        onclick="showToast('Scale port reconfigured successfully','success')">
+                                        Configure
+                                    </button>
+
+                                    <button class="btn danger" style="flex:1" onclick="toggleScaleConnection()">
+                                        Toggle Conn
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="card" style="margin-top:18px">
+
+                                <div class="section-head">
+                                    <h3>LIVE STATS & MPE</h3>
+                                    <span class="badge green" id="mpeStatusBadge">PASS</span>
+                                </div>
+
+                                <div class="result-grid">
+
+                                    <div class="metric">
+                                        <span>Observations</span>
+                                        <strong id="statCount">6</strong>
+                                    </div>
+
+                                    <div class="metric">
+                                        <span>Maximum</span>
+                                        <strong id="statMax">10.085 kg</strong>
+                                    </div>
+
+                                    <div class="metric">
+                                        <span>Minimum</span>
+                                        <strong id="statMin">10.001 kg</strong>
+                                    </div>
+
+                                </div>
+
+                                <div
+                                    style="margin-top:14px;display:flex;justify-content:space-between;align-items:center">
+                                    <div>
+                                        <small class="muted">Range (Max - Min)</small>
+                                        <div class="result-number" id="statRange">0.084 kg</div>
+                                    </div>
+                                    <div>
+                                        <small class="muted">Std Dev (s)</small>
+                                        <div style="font-size:18px;font-weight:700" id="statStdDev">0.031 kg</div>
+                                    </div>
+                                </div>
+
+                                <div style="margin-top:12px;padding-top:10px;border-top:1px dashed var(--border)">
+                                    <small class="muted">OIML R-76 MPE Limit ($\pm E$)</small>
+                                    <div style="font-size:14px;font-weight:700;color:var(--primary)" id="statMpeLimit">
+                                        ± 0.015 kg (1.5 e)
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                            <div class="card" style="margin-top:18px">
+
+                                <div class="section-head">
+                                    <h3>OFFLINE STORAGE</h3>
+                                    <span class="badge orange">Local State</span>
+                                </div>
+
+                                <div class="small">
+                                    <b id="offlineTotalCount">24</b> local observations recorded
+                                </div>
+
+                                <div class="small" style="margin-top:7px">
+                                    <b id="offlinePendingCount">1</b> pending manager sign-off
+                                </div>
+
+                                <div class="progress" style="margin-top:12px">
+                                    <div class="progress-bar" style="width:100%"></div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ================= REPORTS ================= -->
+
+                <section id="reports" class="screen">
+
+                    <div class="hero">
+
+                        <div>
+                            <h1>Test Reports & Certificates</h1>
+                            <p class="muted">
+                                Automated OIML R-76 test documentation, compliance evaluation, and manager sign-off.
+                            </p>
+                        </div>
+
+                        <button class="btn primary" onclick="navigateTo('test')">
+                            Go to Active Test
+                        </button>
+
+                    </div>
+
+
+                    <div class="card">
+
+                        <table>
+
+                            <thead>
+                                <tr>
+                                    <th>Report ID</th>
+                                    <th>Test ID</th>
+                                    <th>Instrument</th>
+                                    <th>Result</th>
+                                    <th>Sign-off Status</th>
+                                    <th>Generated</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="reportsTbody">
+                                <!-- Dynamically populated -->
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ================= CUSTOMERS ================= -->
+
+                <section id="customers" class="screen">
+
+                    <div class="section-head">
+                        <div>
+                            <h1>Customer Management</h1>
+                            <p class="muted">Manage client profiles, lab contracts, and assigned weighing equipment.</p>
+                        </div>
+
+                        <button class="btn primary" onclick="openAddCustomerModal()">
+                            + Add New Customer
+                        </button>
+                    </div>
+
+                    <div class="card">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Customer ID</th>
+                                    <th>Company Name</th>
+                                    <th>Industry</th>
+                                    <th>Contact Person</th>
+                                    <th>Assigned Instruments</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customersTbody">
+                                <!-- Dynamically populated -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                </section>
+
+
+                <!-- ================= RULES & STANDARDS ================= -->
+
+                <section id="rules" class="screen">
+
+                    <div class="section-head">
+                        <div>
+                            <h1>OIML R-76 Standard Rules & Tolerances</h1>
+                            <p class="muted">Metrological requirements and Maximum Permissible Error (MPE) thresholds.
+                            </p>
+                        </div>
+
+                        <button class="btn primary"
+                            onclick="showToast('OIML R-76 2006 Edition rules applied','success')">
+                            ✔ Rules Active
+                        </button>
+                    </div>
+
+                    <div class="grid grid2">
+
+                        <div class="card">
+                            <h2>Accuracy Classes & Limits</h2>
+                            <br>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Class</th>
+                                        <th>Verification Scale Interval (e)</th>
+                                        <th>Minimum Capacity (Min)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><b>Class I (Special)</b></td>
+                                        <td>0.001 g ≤ e</td>
+                                        <td>100 e</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Class II (High)</b></td>
+                                        <td>0.001 g ≤ e ≤ 0.05 g</td>
+                                        <td>50 e</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Class III (Medium)</b></td>
+                                        <td>0.1 g ≤ e ≤ 2 g</td>
+                                        <td>20 e</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Class IIII (Ordinary)</b></td>
+                                        <td>5 g ≤ e</td>
+                                        <td>10 e</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="card">
+                            <h2>Maximum Permissible Errors (MPE)</h2>
+                            <p class="muted small" style="margin-bottom:12px">OIML R-76 Table 6 (Initial Verification
+                                limits for Class III)</p>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Load Range (in e)</th>
+                                        <th>MPE Initial Verification</th>
+                                        <th>MPE In-Service Testing</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>0 ≤ m ≤ 500 e</td>
+                                        <td><b>± 0.5 e</b></td>
+                                        <td>± 1.0 e</td>
+                                    </tr>
+                                    <tr>
+                                        <td>500 e &lt; m ≤ 2000 e</td>
+                                        <td><b>± 1.0 e</b></td>
+                                        <td>± 2.0 e</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2000 e &lt; m ≤ 10000 e</td>
+                                        <td><b>± 1.5 e</b></td>
+                                        <td>± 3.0 e</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ================= AUDIT TRAIL ================= -->
+
+                <section id="audit" class="screen">
+
+                    <div class="section-head">
+                        <div>
+                            <h1>Audit Trail Log</h1>
+                            <p class="muted">Immutable client-side activity record for quality assurance and compliance.
+                            </p>
+                        </div>
+
+                        <button class="btn" onclick="exportAuditLog()">
+                            📥 Export Audit CSV
+                        </button>
+                    </div>
+
+                    <div class="card">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Timestamp</th>
+                                    <th>User</th>
+                                    <th>Role</th>
+                                    <th>Action</th>
+                                    <th>Details</th>
+                                </tr>
+                            </thead>
+                            <tbody id="auditTbody">
+                                <!-- Dynamically populated -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                </section>
+
+
+            </div>
+        </main>
+    </div>
+
+
+    <!-- ================= MODALS ================= -->
+
+    <!-- LOGIN / ROLE SWITCHER MODAL -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Switch User / Select Role (RBAC Login)</h3>
+                <button class="btn sm" onclick="closeModal('loginModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <p class="muted small" style="margin-bottom:15px">
+                    Select a user account to simulate role-based access control permissions.
+                </p>
+
+                <div class="user-option-card" onclick="loginAs('tech')">
+                    <div style="display:flex;align-items:center;gap:12px">
+                        <div class="avatar" style="background:#175cd3">KS</div>
+                        <div>
+                            <b>Karthikeyan S</b>
+                            <div class="small muted">Laboratory Technician</div>
+                        </div>
+                    </div>
+                    <span class="role-badge tech">Technician</span>
+                </div>
+
+                <div class="user-option-card" onclick="loginAs('manager')">
+                    <div style="display:flex;align-items:center;gap:12px">
+                        <div class="avatar" style="background:#dc6803">SJ</div>
+                        <div>
+                            <b>Sarah Jenkins</b>
+                            <div class="small muted">Lab Manager / Supervisor</div>
+                        </div>
+                    </div>
+                    <span class="role-badge manager">Manager</span>
+                </div>
+
+                <div class="user-option-card" onclick="loginAs('admin')">
+                    <div style="display:flex;align-items:center;gap:12px">
+                        <div class="avatar" style="background:#d92d20">AR</div>
+                        <div>
+                            <b>Alex Rivera</b>
+                            <div class="small muted">System Administrator</div>
+                        </div>
+                    </div>
+                    <span class="role-badge admin">Admin</span>
+                </div>
+
+                <div class="user-option-card" onclick="loginAs('auditor')">
+                    <div style="display:flex;align-items:center;gap:12px">
+                        <div class="avatar" style="background:#475467">IC</div>
+                        <div>
+                            <b>Inspector Chen</b>
+                            <div class="small muted">Quality & ISO Auditor</div>
+                        </div>
+                    </div>
+                    <span class="role-badge auditor">Auditor</span>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ADD INSTRUMENT MODAL -->
+    <div class="modal-overlay" id="addInstrumentModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Register New Instrument</h3>
+                <button class="btn sm" onclick="closeModal('addInstrumentModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="addInstrumentForm" onsubmit="saveNewInstrument(event)" class="grid grid2">
+                    <div class="field">
+                        <label>INSTRUMENT ID</label>
+                        <input type="text" id="insId" required placeholder="e.g. NAWI-1090">
+                    </div>
+                    <div class="field">
+                        <label>MANUFACTURER</label>
+                        <input type="text" id="insMfr" required placeholder="e.g. Mettler Toledo">
+                    </div>
+                    <div class="field">
+                        <label>MODEL</label>
+                        <input type="text" id="insModel" required placeholder="e.g. XP-500">
+                    </div>
+                    <div class="field">
+                        <label>CAPACITY (Max)</label>
+                        <input type="text" id="insCap" required placeholder="e.g. 50 kg">
+                    </div>
+                    <div class="field">
+                        <label>SCALE INTERVAL (e)</label>
+                        <input type="text" id="insIntervalE" required placeholder="e.g. 10 g">
+                    </div>
+                    <div class="field">
+                        <label>ACCURACY CLASS</label>
+                        <select id="insClass">
+                            <option value="III">Class III (Medium)</option>
+                            <option value="II">Class II (High)</option>
+                            <option value="I">Class I (Special)</option>
+                            <option value="IIII">Class IIII (Ordinary)</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeModal('addInstrumentModal')">Cancel</button>
+                <button class="btn primary" form="addInstrumentForm" type="submit">Save Instrument</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- REPORT CERTIFICATE VIEWER MODAL -->
+    <div class="modal-overlay" id="reportViewerModal">
+        <div class="modal-card" style="max-width:850px">
+            <div class="modal-header">
+                <h3>OIML R-76 Official Test Certificate</h3>
+                <button class="btn sm" onclick="closeModal('reportViewerModal')">✕</button>
+            </div>
+            <div class="modal-body" id="certificateContent">
+                <!-- Rendered dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="exportReportJson()">📥 Export JSON</button>
+                <button class="btn primary" onclick="window.print()">🖨 Print / PDF Certificate</button>
+                <button class="btn success" id="managerSignoffBtn" onclick="signOffReport()">✍ Manager Sign Off</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ADD CUSTOMER MODAL -->
+    <div class="modal-overlay" id="addCustomerModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Add New Customer</h3>
+                <button class="btn sm" onclick="closeModal('addCustomerModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="addCustomerForm" onsubmit="saveNewCustomer(event)" class="grid grid2">
+                    <div class="field">
+                        <label>COMPANY NAME</label>
+                        <input type="text" id="custName" required placeholder="e.g. Apex Logistics Ltd">
+                    </div>
+                    <div class="field">
+                        <label>INDUSTRY</label>
+                        <input type="text" id="custIndustry" required placeholder="e.g. Pharmaceutical">
+                    </div>
+                    <div class="field">
+                        <label>CONTACT PERSON</label>
+                        <input type="text" id="custContact" required placeholder="e.g. Robert Vance">
+                    </div>
+                    <div class="field">
+                        <label>ASSIGNED EQUIPMENT</label>
+                        <input type="text" id="custEquipment" required placeholder="e.g. NAWI-1042">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeModal('addCustomerModal')">Cancel</button>
+                <button class="btn primary" form="addCustomerForm" type="submit">Save Customer</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- TOAST CONTAINER -->
+    <div class="toast-container" id="toastContainer"></div>
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+    <script>
+
+        /* --- DEFAULT CONSTANTS & STATE --- */
+
+        const USERS = {
+            tech: {
+                id: 'tech',
+                name: 'Karthikeyan S',
+                role: 'Laboratory Technician',
+                badgeClass: 'tech',
+                avatar: 'KS',
+                permissions: ['read_dashboard', 'run_tests', 'record_obs', 'handle_anomalies', 'view_reports', 'view_instruments']
+            },
+            manager: {
+                id: 'manager',
+                name: 'Sarah Jenkins',
+                role: 'Lab Manager / Supervisor',
+                badgeClass: 'manager',
+                avatar: 'SJ',
+                permissions: ['read_dashboard', 'run_tests', 'record_obs', 'handle_anomalies', 'view_reports', 'sign_reports', 'manage_rules', 'view_instruments', 'add_instruments', 'view_customers', 'add_customers', 'view_audit']
+            },
+            admin: {
+                id: 'admin',
+                name: 'Alex Rivera',
+                role: 'System Administrator',
+                badgeClass: 'admin',
+                avatar: 'AR',
+                permissions: ['*']
+            },
+            auditor: {
+                id: 'auditor',
+                name: 'Inspector Chen',
+                role: 'Quality & ISO Auditor',
+                badgeClass: 'auditor',
+                avatar: 'IC',
+                permissions: ['read_dashboard', 'view_reports', 'view_instruments', 'view_customers', 'view_rules', 'view_audit']
+            }
+        };
+
+        const DEFAULT_INSTRUMENTS = [
+            {
+                id: 'NAWI-1042',
+                name: 'Digital Platform Weighing Instrument',
+                mfr: 'Example Instruments',
+                model: 'WI-300',
+                capacity: '30 kg',
+                intervalE: '10 g',
+                intervalD: '10 g',
+                class: 'III',
+                lastCal: '18 Aug 2026',
+                status: 'Ready'
+            },
+            {
+                id: 'NAWI-1051',
+                name: 'Heavy Industrial Crane Scale',
+                mfr: 'Scales Global Inc',
+                model: 'HD-1500',
+                capacity: '1500 kg',
+                intervalE: '500 g',
+                intervalD: '500 g',
+                class: 'III',
+                lastCal: '02 Jul 2026',
+                status: 'Ready'
+            },
+            {
+                id: 'NAWI-1020',
+                name: 'Precision Analytical Balance',
+                mfr: 'LabTech Scientific',
+                model: 'AB-220',
+                capacity: '220 g',
+                intervalE: '0.001 g',
+                intervalD: '0.001 g',
+                class: 'II',
+                lastCal: '29 Aug 2026',
+                status: 'Ready'
+            }
+        ];
+
+        const DEFAULT_REPORTS = [
+            {
+                id: 'RPT-2026-031',
+                testId: 'TST-2026-084',
+                instrumentId: 'NAWI-1042',
+                result: 'PASS',
+                signedOff: true,
+                signedBy: 'Sarah Jenkins',
+                generatedDate: '31 Aug 2026',
+                observationsCount: 10,
+                targetLoad: '10.000 kg',
+                range: '0.011 kg',
+                mean: '10.005 kg'
+            },
+            {
+                id: 'RPT-2026-030',
+                testId: 'TST-2026-083',
+                instrumentId: 'NAWI-1051',
+                result: 'PASS',
+                signedOff: false,
+                signedBy: null,
+                generatedDate: '31 Aug 2026',
+                observationsCount: 10,
+                targetLoad: '500.000 kg',
+                range: '0.200 kg',
+                mean: '500.040 kg'
+            }
+        ];
+
+        const DEFAULT_CUSTOMERS = [
+            { id: 'CUST-001', name: 'Apex Logistics Corp', industry: 'Shipping & Freight', contact: 'Mark Sterling', equipment: 'NAWI-1051', status: 'Active' },
+            { id: 'CUST-002', name: 'BioPharm Solutions', industry: 'Pharmaceutical', contact: 'Elena Rostova', equipment: 'NAWI-1020', status: 'Active' },
+            { id: 'CUST-003', name: 'Metro Grain Supplies', industry: 'Agriculture', contact: 'David Thorne', equipment: 'NAWI-1042', status: 'Active' }
+        ];
+
+        let AppState = {
+            currentUser: USERS.tech,
+            selectedInstrumentId: 'NAWI-1042',
+            activeTestId: 'TST-2026-084',
+            instruments: [...DEFAULT_INSTRUMENTS],
+            reports: [...DEFAULT_REPORTS],
+            customers: [...DEFAULT_CUSTOMERS],
+            tests: {
+                'TST-2026-084': {
+                    id: 'TST-2026-084',
+                    instrumentId: 'NAWI-1042',
+                    type: 'OIML R-76 Full Verification Suite',
+                    activeSubTest: 'repeatability',
+                    status: 'In Progress',
+                    verification: {
+                        verified: true,
+                        notes: 'Scale bubble level centered; warm-up completed; ambient temp 21.5°C.'
+                    },
+                    zeroTare: {
+                        zeroReading: '0.000',
+                        zeroError: '+0.001 kg',
+                        zeroStatus: 'PASS',
+                        tareApplied: '5.000 kg',
+                        netReading: '5.000 kg',
+                        tareStatus: 'PASS'
+                    },
+                    repeatability: {
+                        targetLoad: '10.000',
+                        currentObservationIndex: 7,
+                        readings: [
+                            { obs: 1, target: '10.000 kg', observed: '10.001', diff: '+0.001 kg', source: 'RS-232', status: 'Valid' },
+                            { obs: 2, target: '10.000 kg', observed: '10.003', diff: '+0.003 kg', source: 'RS-232', status: 'Valid' },
+                            { obs: 3, target: '10.000 kg', observed: '10.002', diff: '+0.002 kg', source: 'Manual', status: 'Valid' },
+                            { obs: 4, target: '10.000 kg', observed: '10.004', diff: '+0.004 kg', source: 'RS-232', status: 'Valid' },
+                            { obs: 5, target: '10.000 kg', observed: '10.006', diff: '+0.006 kg', source: 'RS-232', status: 'Valid' },
+                            { obs: 6, target: '10.000 kg', observed: '10.012', diff: '+0.012 kg', source: 'RS-232', status: 'Valid' },
+                            { obs: 7, target: '10.000 kg', observed: '10.085', diff: '+0.085 kg', source: 'RS-232', status: 'Review' }
+                        ]
+                    },
+                    eccentricity: {
+                        targetLoad: '10.000',
+                        activePos: 1,
+                        positions: [
+                            { posId: 1, name: 'Pos 1: Center', target: '10.000 kg', observed: '10.001', diffCenter: '0.000 kg', status: 'Valid' },
+                            { posId: 2, name: 'Pos 2: Top-Left (Corner 1)', target: '10.000 kg', observed: '10.003', diffCenter: '+0.002 kg', status: 'Valid' },
+                            { posId: 3, name: 'Pos 3: Top-Right (Corner 2)', target: '10.000 kg', observed: '10.002', diffCenter: '+0.001 kg', status: 'Valid' },
+                            { posId: 4, name: 'Pos 4: Bottom-Right (Corner 3)', target: '10.000 kg', observed: '10.004', diffCenter: '+0.003 kg', status: 'Valid' },
+                            { posId: 5, name: 'Pos 5: Bottom-Left (Corner 4)', target: '10.000 kg', observed: '10.002', diffCenter: '+0.001 kg', status: 'Valid' }
+                        ]
+                    },
+                    weighing: {
+                        activeStep: 1,
+                        steps: [
+                            { step: 1, load: '0.200', direction: 'Increasing', target: '0.200 kg', observed: '0.200', diff: '0.000 kg', mpe: '±0.005 kg', status: 'PASS' },
+                            { step: 2, load: '5.000', direction: 'Increasing', target: '5.000 kg', observed: '5.002', diff: '+0.002 kg', mpe: '±0.005 kg', status: 'PASS' },
+                            { step: 3, load: '10.000', direction: 'Increasing', target: '10.000 kg', observed: '10.003', diff: '+0.003 kg', mpe: '±0.010 kg', status: 'PASS' },
+                            { step: 4, load: '20.000', direction: 'Increasing', target: '20.000 kg', observed: '20.005', diff: '+0.005 kg', mpe: '±0.015 kg', status: 'PASS' },
+                            { step: 5, load: '30.000', direction: 'Increasing', target: '30.000 kg', observed: '30.008', diff: '+0.008 kg', mpe: '±0.015 kg', status: 'PASS' },
+                            { step: 6, load: '20.000', direction: 'Decreasing', target: '20.000 kg', observed: '20.004', diff: '+0.004 kg', mpe: '±0.015 kg', status: 'PASS' },
+                            { step: 7, load: '10.000', direction: 'Decreasing', target: '10.000 kg', observed: '10.002', diff: '+0.002 kg', mpe: '±0.010 kg', status: 'PASS' },
+                            { step: 8, load: '0.200', direction: 'Decreasing', target: '0.200 kg', observed: '0.200', diff: '0.000 kg', mpe: '±0.005 kg', status: 'PASS' }
+                        ]
+                    }
+                }
+            },
+            auditTrail: [
+                { time: '10:31:42', user: 'Karthikeyan S', role: 'Technician', action: 'Captured Reading', details: 'Captured observation #07 (10.085 kg) via RS-232' },
+                { time: '10:28:15', user: 'Karthikeyan S', role: 'Technician', action: 'Test Started', details: 'Started TST-2026-084 for instrument NAWI-1042' },
+                { time: '09:15:00', user: 'Sarah Jenkins', role: 'Lab Manager', action: 'Signed Report', details: 'Approved report RPT-2026-031 for NAWI-1042' }
+            ],
+            isStreaming: false,
+            streamTimer: null,
+            viewingReportId: null
+        };
+
+
+        /* --- PERSISTENCE HELPERS --- */
+
+        function saveState() {
+            try {
+                localStorage.setItem('NAWI_TESTFLOW_STATE_V1', JSON.stringify({
+                    currentUserRoleKey: AppState.currentUser.id,
+                    selectedInstrumentId: AppState.selectedInstrumentId,
+                    activeTestId: AppState.activeTestId,
+                    instruments: AppState.instruments,
+                    reports: AppState.reports,
+                    customers: AppState.customers,
+                    tests: AppState.tests,
+                    auditTrail: AppState.auditTrail
+                }));
+            } catch (e) {
+                console.warn("Could not save state to localStorage", e);
+            }
+        }
+
+        function loadState() {
+            try {
+                const raw = localStorage.getItem('NAWI_TESTFLOW_STATE_V1');
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (parsed.currentUserRoleKey && USERS[parsed.currentUserRoleKey]) {
+                        AppState.currentUser = USERS[parsed.currentUserRoleKey];
+                    }
+                    if (parsed.selectedInstrumentId) AppState.selectedInstrumentId = parsed.selectedInstrumentId;
+                    if (parsed.activeTestId) AppState.activeTestId = parsed.activeTestId;
+                    if (parsed.instruments) AppState.instruments = parsed.instruments;
+                    if (parsed.reports) AppState.reports = parsed.reports;
+                    if (parsed.customers) AppState.customers = parsed.customers;
+                    if (parsed.tests) AppState.tests = parsed.tests;
+                    if (parsed.auditTrail) AppState.auditTrail = parsed.auditTrail;
+                }
+            } catch (e) {
+                console.warn("Using default state", e);
+            }
+        }
+
+        function resetDemoData() {
+            if (confirm("Reset all local demo data back to initial defaults?")) {
+                localStorage.removeItem('NAWI_TESTFLOW_STATE_V1');
+                location.reload();
+            }
+        }
+
+
+        /* --- AUDIT TRAIL LOGGING --- */
+
+        function logAudit(action, details) {
+            const timestamp = new Date().toLocaleTimeString();
+            const entry = {
+                time: timestamp,
+                user: AppState.currentUser.name,
+                role: AppState.currentUser.role,
+                action: action,
+                details: details
+            };
+            AppState.auditTrail.unshift(entry);
+            if (AppState.auditTrail.length > 50) AppState.auditTrail.pop();
+            saveState();
+            renderAuditTrail();
+            renderRecentActivity();
+        }
+
+
+        /* --- RBAC PERMISSION CHECK --- */
+
+        function hasPermission(perm) {
+            if (AppState.currentUser.permissions.includes('*')) return true;
+            return AppState.currentUser.permissions.includes(perm);
+        }
+
+        function checkPermissionOrToast(perm, actionDescription) {
+            if (!hasPermission(perm)) {
+                showToast(`Access Denied: Current role (${AppState.currentUser.role}) cannot ${actionDescription}.`, 'error');
+                return false;
+            }
+            return true;
+        }
+
+        function updateRbacUI() {
+            // Update User Avatar & Info
+            document.getElementById('userAvatar').textContent = AppState.currentUser.avatar;
+            document.getElementById('userNameDisplay').textContent = AppState.currentUser.name;
+            document.getElementById('userRoleDisplay').textContent = AppState.currentUser.role;
+
+            // Header Badge
+            const headerBadge = document.getElementById('roleBadgeHeader');
+            headerBadge.textContent = AppState.currentUser.role.split(' ')[0];
+            headerBadge.className = `role-badge ${AppState.currentUser.badgeClass}`;
+
+            // Welcome Greeting
+            document.getElementById('welcomeHeading').textContent = `Welcome, ${AppState.currentUser.name}`;
+
+            // Disable/Lock Buttons based on role
+            const addInstBtn = document.getElementById('addInstrumentBtn');
+            if (addInstBtn) {
+                if (!hasPermission('add_instruments')) {
+                    addInstBtn.classList.add('disabled');
+                    addInstBtn.title = "Requires Manager or Admin role";
+                } else {
+                    addInstBtn.classList.remove('disabled');
+                    addInstBtn.title = "";
+                }
+            }
+        }
+
+
+        /* --- LOGIN / USER SWITCHER --- */
+
+        function openLoginModal() {
+            openModal('loginModal');
+        }
+
+        function loginAs(roleKey) {
+            if (USERS[roleKey]) {
+                AppState.currentUser = USERS[roleKey];
+                updateRbacUI();
+                closeModal('loginModal');
+                showToast(`Switched user role to ${AppState.currentUser.name} (${AppState.currentUser.role})`, 'info');
+                logAudit('User Switch', `Logged in as ${AppState.currentUser.name} (${AppState.currentUser.role})`);
+                saveState();
+            }
+        }
+
+
+        /* --- SCREEN NAVIGATION --- */
+
+        function navigateTo(screenId, element) {
+            // Permission check for admin screens
+            if (screenId === 'audit' && !hasPermission('view_audit')) {
+                return checkPermissionOrToast('view_audit', 'view audit trail');
+            }
+            if (screenId === 'customers' && !hasPermission('view_customers')) {
+                return checkPermissionOrToast('view_customers', 'view customer management');
+            }
+
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            const targetScreen = document.getElementById(screenId);
+            if (targetScreen) targetScreen.classList.add('active');
+
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            if (element) {
+                element.classList.add('active');
+            } else {
+                const matchingNav = document.querySelector(`.nav-item[data-screen="${screenId}"]`);
+                if (matchingNav) matchingNav.classList.add('active');
+            }
+
+            // Update Header Title
+            const titles = {
+                dashboard: 'Dashboard',
+                instrument: 'Instruments Selection',
+                sequence: 'Test Sequence Rules',
+                test: 'Active Test Workspace',
+                reports: 'Test Reports & Certificates',
+                customers: 'Customer Management',
+                rules: 'OIML R-76 Rules & Standards',
+                audit: 'Audit Trail Log'
+            };
+            document.getElementById('pageTitleDisplay').textContent = titles[screenId] || 'NAWI TestFlow';
+
+            // Refresh view specific data
+            if (screenId === 'dashboard') renderDashboard();
+            if (screenId === 'instrument') renderInstruments();
+            if (screenId === 'reports') renderReports();
+            if (screenId === 'test') renderTestWorkspace();
+            if (screenId === 'customers') renderCustomers();
+            if (screenId === 'audit') renderAuditTrail();
+        }
+
+        function showScreen(screenId, element) {
+            navigateTo(screenId, element);
+        }
+
+
+        /* --- DASHBOARD RENDERER --- */
+
+        function renderDashboard() {
+            // Calculate KPIs
+            const activeCount = Object.keys(AppState.tests).length;
+            const completedCount = AppState.reports.length;
+            const pendingCount = AppState.reports.filter(r => !r.signedOff).length;
+            const instrumentsCount = AppState.instruments.length;
+
+            document.getElementById('kpiActiveCount').textContent = activeCount;
+            document.getElementById('kpiCompletedCount').textContent = completedCount;
+            document.getElementById('kpiPendingCount').textContent = pendingCount;
+            document.getElementById('kpiInstrumentsCount').textContent = instrumentsCount;
+
+            // Render Active Tests Table
+            const tbody = document.getElementById('dashboardActiveTestsTbody');
+            tbody.innerHTML = '';
+
+            Object.values(AppState.tests).forEach(t => {
+                const obsCount = t.readings.length;
+                const progressPct = Math.round((obsCount / 10) * 100);
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+            <td><b>${t.id}</b></td>
+            <td>${t.instrumentId}</td>
+            <td>${t.type}</td>
+            <td style="width:140px">
+                <div class="progress">
+                    <div class="progress-bar" style="width:${progressPct}%"></div>
+                </div>
+                <small class="muted">${obsCount} / 10 obs</small>
+            </td>
+            <td><span class="badge blue">${t.status}</span></td>
+            <td>
+                <button class="btn sm primary" onclick="resumeTest('${t.id}')">Resume</button>
+            </td>
+        `;
+                tbody.appendChild(tr);
+            });
+
+            renderRecentActivity();
+        }
+
+        function renderRecentActivity() {
+            const list = document.getElementById('recentActivityList');
+            list.innerHTML = '';
+            const recent = AppState.auditTrail.slice(0, 5);
+            recent.forEach(log => {
+                const div = document.createElement('div');
+                div.innerHTML = `🟢 <b>${log.action}</b> by ${log.user} <span class="muted">(${log.time})</span>`;
+                list.appendChild(div);
+            });
+        }
+
+        function resumeTest(testId) {
+            AppState.activeTestId = testId;
+            saveState();
+            navigateTo('test');
+        }
+
+        function startNewTestWizard() {
+            if (!checkPermissionOrToast('run_tests', 'start new tests')) return;
+            navigateTo('instrument');
+        }
+
+
+        /* --- INSTRUMENT SELECTION & MANAGEMENT --- */
+
+        function renderInstruments() {
+            const container = document.getElementById('instrumentListContainer');
+            container.innerHTML = '';
+
+            AppState.instruments.forEach(ins => {
+                const isSelected = ins.id === AppState.selectedInstrumentId;
+                const card = document.createElement('div');
+                card.className = `card instrument-card ${isSelected ? 'selected' : ''}`;
+                card.onclick = () => selectInstrumentCard(ins.id);
+                card.innerHTML = `
+            <div class="instrument-header">
+                <div>
+                    <h2>${ins.id}</h2>
+                    <p class="muted">${ins.name}</p>
+                </div>
+                <span class="badge green">${ins.status}</span>
+            </div>
+            <div class="specs">
+                <div class="spec"><span>Manufacturer</span><strong>${ins.mfr}</strong></div>
+                <div class="spec"><span>Model</span><strong>${ins.model}</strong></div>
+                <div class="spec"><span>Capacity</span><strong>${ins.capacity}</strong></div>
+                <div class="spec"><span>Scale Interval (e)</span><strong>${ins.intervalE}</strong></div>
+                <div class="spec"><span>Verification Interval (d)</span><strong>${ins.intervalD}</strong></div>
+                <div class="spec"><span>Accuracy Class</span><strong>${ins.class}</strong></div>
+            </div>
+        `;
+                container.appendChild(card);
+            });
+
+            const selectedIns = AppState.instruments.find(i => i.id === AppState.selectedInstrumentId);
+            if (selectedIns) {
+                document.getElementById('seqInstrumentName').textContent = selectedIns.id;
+            }
+        }
+
+        function selectInstrumentCard(insId) {
+            AppState.selectedInstrumentId = insId;
+            saveState();
+            renderInstruments();
+        }
+
+        function proceedToSequence() {
+            if (!checkPermissionOrToast('run_tests', 'proceed with testing')) return;
+            renderSequence();
+            navigateTo('sequence');
+        }
+
+        function openAddInstrumentModal() {
+            if (!checkPermissionOrToast('add_instruments', 'add new instruments')) return;
+            openModal('addInstrumentModal');
+        }
+
+        function saveNewInstrument(event) {
+            event.preventDefault();
+            const newIns = {
+                id: document.getElementById('insId').value.trim(),
+                name: `${document.getElementById('insMfr').value} ${document.getElementById('insModel').value} Scale`,
+                mfr: document.getElementById('insMfr').value.trim(),
+                model: document.getElementById('insModel').value.trim(),
+                capacity: document.getElementById('insCap').value.trim(),
+                intervalE: document.getElementById('insIntervalE').value.trim(),
+                intervalD: document.getElementById('insIntervalE').value.trim(),
+                class: document.getElementById('insClass').value,
+                lastCal: 'Today',
+                status: 'Ready'
+            };
+
+            AppState.instruments.push(newIns);
+            AppState.selectedInstrumentId = newIns.id;
+            saveState();
+            closeModal('addInstrumentModal');
+            renderInstruments();
+            showToast(`Instrument ${newIns.id} registered successfully`, 'success');
+            logAudit('Add Instrument', `Registered new instrument ${newIns.id}`);
+        }
+
+
+        /* --- SEQUENCE BUILDER --- */
+
+        function renderSequence() {
+            const selectedIns = AppState.instruments.find(i => i.id === AppState.selectedInstrumentId) || AppState.instruments[0];
+            const items = [
+                { num: '01', title: 'Instrument Verification', desc: `Verify specifications for ${selectedIns.id} (Class ${selectedIns.class})` },
+                { num: '02', title: 'Initial Zero Setting', desc: 'Verify zero setting device operation within ± 0.25 e' },
+                { num: '03', title: 'Repeatability Test', desc: `Indexed 10-observation test for target load under ${selectedIns.capacity}` },
+                { num: '04', title: 'Eccentricity Test', desc: 'Evaluate readings at 4 corner positions with 1/3 Max load' },
+                { num: '05', title: 'Weighing Performance', desc: 'Test increasing and decreasing loads across capacity range' },
+                { num: '06', title: 'Final Verification', desc: 'Synthesize observations and evaluate against OIML R-76 MPE limits' }
+            ];
+
+            const container = document.getElementById('sequenceItemsList');
+            container.innerHTML = '';
+            items.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'sequence-item';
+                div.innerHTML = `
+            <div class="sequence-num">${item.num}</div>
+            <div style="flex:1">
+                <b>${item.title}</b>
+                <div class="small muted">${item.desc}</div>
+            </div>
+            <span class="badge green">Recommended</span>
+        `;
+                container.appendChild(div);
+            });
+        }
+
+        function openCustomizeSequenceModal() {
+            showToast('Sequence steps optimized for OIML R-76 compliance.', 'info');
+        }
+
+        function ensureTestStructure(t) {
+            if (!t) return t;
+            if (!t.activeSubTest) t.activeSubTest = 'repeatability';
+            if (!t.verification) {
+                t.verification = {
+                    verified: true,
+                    notes: 'Scale level bubble centered; warm-up completed; ambient temp 21.5°C.'
+                };
+            }
+            if (!t.zeroTare) {
+                t.zeroTare = {
+                    zeroReading: '0.000',
+                    zeroError: '+0.001 kg',
+                    zeroStatus: 'PASS',
+                    tareApplied: '5.000 kg',
+                    netReading: '5.000 kg',
+                    tareStatus: 'PASS'
+                };
+            }
+            if (!t.repeatability) {
+                t.repeatability = {
+                    targetLoad: t.targetLoad || '10.000',
+                    currentObservationIndex: t.currentObservationIndex || (t.readings ? t.readings.length + 1 : 1),
+                    readings: t.readings || []
+                };
+            }
+            if (!t.eccentricity) {
+                t.eccentricity = {
+                    targetLoad: '10.000',
+                    activePos: 1,
+                    positions: [
+                        { posId: 1, name: 'Pos 1: Center', target: '10.000 kg', observed: '10.001', diffCenter: '0.000 kg', status: 'Valid' },
+                        { posId: 2, name: 'Pos 2: Top-Left (Corner 1)', target: '10.000 kg', observed: '10.003', diffCenter: '+0.002 kg', status: 'Valid' },
+                        { posId: 3, name: 'Pos 3: Top-Right (Corner 2)', target: '10.000 kg', observed: '10.002', diffCenter: '+0.001 kg', status: 'Valid' },
+                        { posId: 4, name: 'Pos 4: Bottom-Right (Corner 3)', target: '10.000 kg', observed: '10.004', diffCenter: '+0.003 kg', status: 'Valid' },
+                        { posId: 5, name: 'Pos 5: Bottom-Left (Corner 4)', target: '10.000 kg', observed: '10.002', diffCenter: '+0.001 kg', status: 'Valid' }
+                    ]
+                };
+            }
+            if (!t.weighing) {
+                t.weighing = {
+                    activeStep: 1,
+                    steps: [
+                        { step: 1, load: '0.200', direction: 'Increasing', target: '0.200 kg', observed: '0.200', diff: '0.000 kg', mpe: '±0.005 kg', status: 'PASS' },
+                        { step: 2, load: '5.000', direction: 'Increasing', target: '5.000 kg', observed: '5.002', diff: '+0.002 kg', mpe: '±0.005 kg', status: 'PASS' },
+                        { step: 3, load: '10.000', direction: 'Increasing', target: '10.000 kg', observed: '10.003', diff: '+0.003 kg', mpe: '±0.010 kg', status: 'PASS' },
+                        { step: 4, load: '20.000', direction: 'Increasing', target: '20.000 kg', observed: '20.005', diff: '+0.005 kg', mpe: '±0.015 kg', status: 'PASS' },
+                        { step: 5, load: '30.000', direction: 'Increasing', target: '30.000 kg', observed: '30.008', diff: '+0.008 kg', mpe: '±0.015 kg', status: 'PASS' },
+                        { step: 6, load: '20.000', direction: 'Decreasing', target: '20.000 kg', observed: '20.004', diff: '+0.004 kg', mpe: '±0.015 kg', status: 'PASS' },
+                        { step: 7, load: '10.000', direction: 'Decreasing', target: '10.000 kg', observed: '10.002', diff: '+0.002 kg', mpe: '±0.010 kg', status: 'PASS' },
+                        { step: 8, load: '0.200', direction: 'Decreasing', target: '0.200 kg', observed: '0.200', diff: '0.000 kg', mpe: '±0.005 kg', status: 'PASS' }
+                    ]
+                };
+            }
+            return t;
+        }
+
+        function acceptAndStartTest() {
+            if (!checkPermissionOrToast('run_tests', 'start testing')) return;
+
+            const newTestId = `TST-2026-${Math.floor(100 + Math.random() * 900)}`;
+            const newTest = {
+                id: newTestId,
+                instrumentId: AppState.selectedInstrumentId,
+                type: 'OIML R-76 Full Verification Suite',
+                activeSubTest: 'repeatability',
+                status: 'In Progress',
+                readings: []
+            };
+            AppState.tests[newTestId] = ensureTestStructure(newTest);
+            AppState.activeTestId = newTestId;
+            saveState();
+            logAudit('Start Test', `Initiated full OIML R-76 test suite ${newTestId} for ${AppState.selectedInstrumentId}`);
+            showToast(`Test ${newTestId} initialized`, 'success');
+            navigateTo('test');
+        }
+
+
+        /* --- TEST WORKSPACE ENGINE --- */
+
+        function getActiveTest() {
+            if (!AppState.tests[AppState.activeTestId]) {
+                const firstKey = Object.keys(AppState.tests)[0];
+                if (firstKey) AppState.activeTestId = firstKey;
+            }
+            return ensureTestStructure(AppState.tests[AppState.activeTestId]);
+        }
+
+        function renderTestWorkspace() {
+            const currentTest = getActiveTest();
+            if (!currentTest) return;
+
+            document.getElementById('activeTestTitle').textContent = `OIML R-76 Verification Suite`;
+            document.getElementById('activeTestSub').textContent = `${currentTest.id} · ${currentTest.instrumentId} · Class III Platform`;
+
+            // Render Interactive Test Index
+            const indexContainer = document.getElementById('testIndexList');
+            indexContainer.innerHTML = '';
+            const steps = [
+                { id: 'verification', num: '01', name: 'Verification', done: true },
+                { id: 'zeroTare', num: '02', name: 'Zero & Tare', done: true },
+                { id: 'repeatability', num: '03', name: 'Repeatability', active: currentTest.activeSubTest === 'repeatability', sub: `${currentTest.repeatability.readings.length} / 10 obs` },
+                { id: 'eccentricity', num: '04', name: 'Eccentricity', active: currentTest.activeSubTest === 'eccentricity', sub: `${currentTest.eccentricity.positions.length} pos` },
+                { id: 'weighing', num: '05', name: 'Weighing Perf.', active: currentTest.activeSubTest === 'weighing', sub: `${currentTest.weighing.steps.length} steps` },
+                { id: 'report', num: '06', name: 'Final Report', active: currentTest.activeSubTest === 'report' }
+            ];
+
+            steps.forEach(st => {
+                const isActive = currentTest.activeSubTest === st.id;
+                const div = document.createElement('div');
+                div.className = `index-item ${st.done ? 'done' : ''} ${isActive ? 'active' : ''}`;
+                div.onclick = () => switchSubTest(st.id);
+                div.innerHTML = `
+            <div class="index-num">${isActive ? '●' : st.num}</div>
+            <div>
+                <b>${st.name}</b>
+                ${st.sub ? `<small style="display:block">${st.sub}</small>` : ''}
+            </div>
+        `;
+                indexContainer.appendChild(div);
+            });
+
+            // Toggle Sub-Views
+            document.querySelectorAll('.sub-view').forEach(sv => sv.classList.remove('active'));
+            const targetSubView = document.getElementById(`subView-${currentTest.activeSubTest || 'repeatability'}`);
+            if (targetSubView) targetSubView.classList.add('active');
+
+            // Render active view components
+            if (currentTest.activeSubTest === 'repeatability') {
+                renderObservationGrid();
+                renderObservationsTable();
+            } else if (currentTest.activeSubTest === 'eccentricity') {
+                renderEccentricityView();
+            } else if (currentTest.activeSubTest === 'weighing') {
+                renderWeighingView();
+            }
+
+            updateLiveCalculations();
+        }
+
+        function switchSubTest(subTestId) {
+            const currentTest = getActiveTest();
+            if (!currentTest) return;
+            currentTest.activeSubTest = subTestId;
+            saveState();
+            renderTestWorkspace();
+        }
+
+
+        /* --- ZERO & TARE ENGINE --- */
+
+        function verifyZeroSetting() {
+            showToast('Zero-setting error tested: +0.001 kg (PASS ≤ ±0.25e)', 'success');
+            logAudit('Zero Test', 'Tested zero setting accuracy (Passed)');
+        }
+
+        function verifyTareBalancing() {
+            const load = document.getElementById('tareLoadSelect').value;
+            showToast(`Tare balancing verified for ${load} kg load. Net indication valid.`, 'success');
+            logAudit('Tare Test', `Verified tare balancing operation for ${load} kg`);
+        }
+
+
+        /* --- ECCENTRICITY ENGINE --- */
+
+        function renderEccentricityView() {
+            const currentTest = getActiveTest();
+            const ecc = currentTest.eccentricity;
+
+            const posClasses = ['', 'center', 'top-left', 'top-right', 'bot-right', 'bot-left'];
+            for (let i = 1; i <= 5; i++) {
+                const btn = document.getElementById(`posBtn${i}`);
+                const valSpan = document.getElementById(`posVal${i}`);
+                const posData = ecc.positions.find(p => p.posId === i);
+                if (btn && posData) {
+                    valSpan.textContent = posData.observed ? `${posData.observed}` : '--';
+                    const posClass = posClasses[i] || '';
+                    if (i === ecc.activePos) {
+                        btn.className = `pos-btn ${posClass} active`;
+                    } else if (posData.observed) {
+                        btn.className = `pos-btn ${posClass} recorded`;
+                    } else {
+                        btn.className = `pos-btn ${posClass}`;
+                    }
+                }
+            }
+
+            const activePosData = ecc.positions.find(p => p.posId === ecc.activePos) || ecc.positions[0];
+            document.getElementById('eccActivePosLabel').textContent = `ACTIVE LOCATION: ${activePosData.name.toUpperCase()} `;
+            document.getElementById('eccReadingDisplay').textContent = activePosData.observed || '10.000';
+
+            const tbody = document.getElementById('eccentricityTbody');
+            tbody.innerHTML = '';
+            ecc.positions.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><b>0${p.posId}</b></td>
+                    <td><b>${p.name}</b></td>
+                    <td>${p.target}</td>
+                    <td><b>${p.observed ? p.observed + ' kg' : '-'}</b></td>
+                    <td>${p.diffCenter || '-'}</td>
+                    <td><span class="badge green">${p.status}</span></td>
+                    <td><button class="btn sm danger" onclick="deleteEccentricityReading(${p.posId})">Reset</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function selectEccentricityPos(posId) {
+            const currentTest = getActiveTest();
+            currentTest.eccentricity.activePos = posId;
+            saveState();
+            renderEccentricityView();
+        }
+
+        function captureEccentricityReading() {
+            if (!checkPermissionOrToast('record_obs', 'record observations')) return;
+            const currentTest = getActiveTest();
+            const ecc = currentTest.eccentricity;
+            const pos = ecc.positions.find(p => p.posId === ecc.activePos);
+
+            if (pos) {
+                const target = parseFloat(ecc.targetLoad || 10.000);
+                const noise = (Math.random() - 0.5) * 0.004;
+                const valStr = (target + noise).toFixed(3);
+
+                pos.observed = valStr;
+                const centerPos = ecc.positions.find(p => p.posId === 1);
+                const centerVal = centerPos && centerPos.observed ? parseFloat(centerPos.observed) : target;
+                const diffCenter = parseFloat(valStr) - centerVal;
+                pos.diffCenter = (diffCenter >= 0 ? '+' : '') + diffCenter.toFixed(3) + ' kg';
+                pos.status = Math.abs(diffCenter) <= 0.015 ? 'Valid' : 'Review';
+
+                saveState();
+                showToast(`Captured corner reading for ${pos.name}: ${valStr} kg`, 'success');
+                logAudit('Capture Eccentricity', `Recorded ${pos.name} reading(${valStr} kg)`);
+                renderEccentricityView();
+                updateLiveCalculations();
+            }
+        }
+
+        function manualEccentricityReading() {
+            if (!checkPermissionOrToast('record_obs', 'record observations')) return;
+            const val = prompt("Enter corner reading (kg):", "10.002");
+            if (val !== null && !isNaN(parseFloat(val))) {
+                const currentTest = getActiveTest();
+                const ecc = currentTest.eccentricity;
+                const pos = ecc.positions.find(p => p.posId === ecc.activePos);
+                if (pos) {
+                    pos.observed = parseFloat(val).toFixed(3);
+                    saveState();
+                    renderEccentricityView();
+                    updateLiveCalculations();
+                }
+            }
+        }
+
+        function deleteEccentricityReading(posId) {
+            const currentTest = getActiveTest();
+            const pos = currentTest.eccentricity.positions.find(p => p.posId === posId);
+            if (pos) {
+                pos.observed = '';
+                pos.diffCenter = '-';
+                saveState();
+                renderEccentricityView();
+            }
+        }
+
+
+        /* --- WEIGHING PERFORMANCE ENGINE --- */
+
+        function renderWeighingView() {
+            const currentTest = getActiveTest();
+            const w = currentTest.weighing;
+
+            const chipsContainer = document.getElementById('weighingStepChips');
+            chipsContainer.innerHTML = '';
+            w.steps.forEach((st, idx) => {
+                const isSelected = (idx + 1) === w.activeStep;
+                const chip = document.createElement('div');
+                chip.className = `step-chip ${isSelected ? 'active' : st.observed ? 'done' : ''}`;
+                chip.onclick = () => selectWeighingStep(idx + 1);
+                chip.innerHTML = `<span>Step ${st.step}:</span> <b>${st.load} kg (${st.direction.slice(0, 3)})</b>`;
+                chipsContainer.appendChild(chip);
+            });
+
+            const activeStepData = w.steps.find(s => s.step === w.activeStep) || w.steps[0];
+            document.getElementById('weighingActiveStepLabel').textContent = `ACTIVE TEST STEP: STEP ${activeStepData.step} (${activeStepData.load} kg ${activeStepData.direction.toUpperCase()})`;
+            document.getElementById('weighingReadingDisplay').textContent = activeStepData.observed || activeStepData.load;
+
+            const tbody = document.getElementById('weighingTbody');
+            tbody.innerHTML = '';
+            w.steps.forEach(s => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><b>${s.step}</b></td>
+                    <td><b>${s.load} kg</b></td>
+                    <td><span class="badge ${s.direction === 'Increasing' ? 'blue' : 'orange'}">${s.direction}</span></td>
+                    <td>${s.target}</td>
+                    <td><b>${s.observed ? s.observed + ' kg' : '-'}</b></td>
+                    <td>${s.diff || '-'}</td>
+                    <td>${s.mpe}</td>
+                    <td><span class="badge green">${s.status}</span></td>
+                    <td><button class="btn sm danger" onclick="deleteWeighingStep(${s.step})">Reset</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function selectWeighingStep(stepNum) {
+            const currentTest = getActiveTest();
+            currentTest.weighing.activeStep = stepNum;
+            saveState();
+            renderWeighingView();
+        }
+
+        function captureWeighingReading() {
+            if (!checkPermissionOrToast('record_obs', 'record observations')) return;
+            const currentTest = getActiveTest();
+            const w = currentTest.weighing;
+            const step = w.steps.find(s => s.step === w.activeStep);
+
+            if (step) {
+                const target = parseFloat(step.load);
+                const noise = (Math.random() - 0.5) * 0.005;
+                const valStr = (target + noise).toFixed(3);
+                const diffNum = parseFloat(valStr) - target;
+
+                step.observed = valStr;
+                step.diff = (diffNum >= 0 ? '+' : '') + diffNum.toFixed(3) + ' kg';
+                step.status = 'PASS';
+
+                if (w.activeStep < w.steps.length) w.activeStep++;
+
+                saveState();
+                showToast(`Captured reading for Step ${step.step}(${target} kg): ${valStr} kg`, 'success');
+                logAudit('Capture Linearity', `Recorded Step ${step.step} (${valStr} kg)`);
+                renderWeighingView();
+                updateLiveCalculations();
+            }
+        }
+
+        function manualWeighingReading() {
+            if (!checkPermissionOrToast('record_obs', 'record observations')) return;
+            const val = prompt("Enter step reading (kg):", "10.002");
+            if (val !== null && !isNaN(parseFloat(val))) {
+                const currentTest = getActiveTest();
+                const step = currentTest.weighing.steps.find(s => s.step === currentTest.weighing.activeStep);
+                if (step) {
+                    step.observed = parseFloat(val).toFixed(3);
+                    saveState();
+                    renderWeighingView();
+                    updateLiveCalculations();
+                }
+            }
+        }
+
+        function deleteWeighingStep(stepNum) {
+            const currentTest = getActiveTest();
+            const step = currentTest.weighing.steps.find(s => s.step === stepNum);
+            if (step) {
+                step.observed = '';
+                step.diff = '-';
+                saveState();
+                renderWeighingView();
+            }
+        }
+
+
+        /* --- REPEATABILITY GRID & ENGINE --- */
+
+        function renderObservationGrid() {
+            const currentTest = getActiveTest();
+            const rep = currentTest.repeatability;
+            const container = document.getElementById('obsGridBoxes');
+            container.innerHTML = '';
+
+            let anomalyCount = 0;
+            for (let i = 1; i <= 10; i++) {
+                const existing = rep.readings.find(r => r.obs === i);
+                const div = document.createElement('div');
+                let classes = 'obs';
+                if (existing) {
+                    if (existing.status === 'Review') {
+                        classes += ' current anomaly';
+                        anomalyCount++;
+                    } else {
+                        classes += ' complete';
+                    }
+                } else if (i === rep.currentObservationIndex) {
+                    classes += ' current';
+                }
+                div.className = classes;
+                div.textContent = i < 10 ? `0${i} ` : i;
+                container.appendChild(div);
+            }
+
+            const completed = rep.readings.filter(r => r.status === 'Valid').length;
+            const remaining = 10 - rep.readings.length;
+            document.getElementById('obsGridSummary').textContent = `${completed} completed · ${anomalyCount} anomaly · ${remaining} remaining`;
+
+            const latestReading = rep.readings[rep.readings.length - 1];
+            const anomalyBox = document.getElementById('anomalyBox');
+            if (latestReading && latestReading.status === 'Review') {
+                anomalyBox.style.display = 'block';
+                document.getElementById('anomalyText').innerHTML = `Reading <b>${latestReading.observed} kg</b> is flagged for discrepancy vs target ${latestReading.target}.`;
+            } else {
+                anomalyBox.style.display = 'none';
+            }
+        }
+
+        function renderObservationsTable() {
+            const currentTest = getActiveTest();
+            const rep = currentTest.repeatability;
+            const tbody = document.getElementById('observationsTbody');
+            tbody.innerHTML = '';
+
+            rep.readings.forEach(r => {
+                const tr = document.createElement('tr');
+                const badgeClass = r.status === 'Valid' ? 'green' : 'orange';
+                tr.innerHTML = `
+                    <td><b>${r.obs < 10 ? '0' + r.obs : r.obs}</b></td>
+                    <td>${r.target}</td>
+                    <td><b>${r.observed} kg</b></td>
+                    <td>${r.diff}</td>
+                    <td>${r.source}</td>
+                    <td><span class="badge ${badgeClass}">${r.status}</span></td>
+                    <td>
+                        <button class="btn sm danger" onclick="deleteObservation(${r.obs})">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updateLiveCalculations() {
+            const currentTest = getActiveTest();
+            const rep = currentTest.repeatability;
+            const values = rep.readings.map(r => parseFloat(r.observed)).filter(n => !isNaN(n));
+
+            if (values.length === 0) {
+                document.getElementById('statCount').textContent = '0';
+                document.getElementById('statMax').textContent = '-';
+                document.getElementById('statMin').textContent = '-';
+                document.getElementById('statRange').textContent = '-';
+                document.getElementById('statStdDev').textContent = '-';
+                return;
+            }
+
+            const max = Math.max(...values);
+            const min = Math.min(...values);
+            const range = max - min;
+            const mean = values.reduce((a, b) => a + b, 0) / values.length;
+
+            const variance = values.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / (values.length > 1 ? values.length - 1 : 1);
+            const stdDev = Math.sqrt(variance);
+
+            document.getElementById('statCount').textContent = values.length;
+            document.getElementById('statMax').textContent = `${max.toFixed(3)} kg`;
+            document.getElementById('statMin').textContent = `${min.toFixed(3)} kg`;
+            document.getElementById('statRange').textContent = `${range.toFixed(3)} kg`;
+            document.getElementById('statStdDev').textContent = `${stdDev.toFixed(3)} kg`;
+
+            const mpeLimit = 0.015;
+            const isPass = range <= (2 * mpeLimit);
+
+            const mpeBadge = document.getElementById('mpeStatusBadge');
+            mpeBadge.textContent = isPass ? 'PASS' : 'FLAGGED';
+            mpeBadge.className = `badge ${isPass ? 'green' : 'red'} `;
+        }
+
+        function onTargetLoadChange(newVal) {
+            const currentTest = getActiveTest();
+            currentTest.repeatability.targetLoad = newVal;
+            saveState();
+            showToast(`Target load set to ${newVal} kg`, 'info');
+        }
+
+        function captureReading() {
+            if (!checkPermissionOrToast('record_obs', 'record observations')) return;
+            const currentTest = getActiveTest();
+            const rep = currentTest.repeatability;
+            if (rep.readings.length >= 10) {
+                if (AppState.isStreaming) {
+                    toggleAutoStream();
+                }
+                showToast('All 10 observations captured!', 'success');
+                return;
+            }
+
+            const target = parseFloat(rep.targetLoad || 10.000);
+            let noise = (Math.random() - 0.5) * 0.006;
+
+            if (rep.currentObservationIndex === 7) {
+                noise = 0.085;
+            }
+
+            const valNum = target + noise;
+            const valStr = valNum.toFixed(3);
+            const diffNum = valNum - target;
+            const diffStr = (diffNum >= 0 ? '+' : '') + diffNum.toFixed(3) + ' kg';
+            const isAnomaly = Math.abs(diffNum) > 0.05;
+
+            const obsNum = rep.currentObservationIndex;
+            const newReading = {
+                obs: obsNum,
+                target: `${target.toFixed(3)} kg`,
+                observed: valStr,
+                diff: diffStr,
+                source: 'RS-232',
+                status: isAnomaly ? 'Review' : 'Valid'
+            };
+
+            document.getElementById('reading').textContent = valStr;
+            document.getElementById('lastScaleReadingDisplay').textContent = `${valStr} kg`;
+            document.getElementById('readingTimestamp').textContent = `Timestamp: ${new Date().toLocaleTimeString()} `;
+
+            rep.readings.push(newReading);
+            if (!isAnomaly) {
+                rep.currentObservationIndex++;
+            }
+            saveState();
+            logAudit('Capture Reading', `Captured observation #${obsNum} (${valStr} kg) for ${currentTest.id}`);
+            renderTestWorkspace();
+        }
+
+        function manualReading() {
+            if (!checkPermissionOrToast('record_obs', 'record observations')) return;
+            const input = prompt("Enter scale observation reading (kg):", "10.002");
+            if (input !== null && !isNaN(parseFloat(input))) {
+                const currentTest = getActiveTest();
+                const rep = currentTest.repeatability;
+                const target = parseFloat(rep.targetLoad || 10.000);
+                const valNum = parseFloat(input);
+                const valStr = valNum.toFixed(3);
+                const diffNum = valNum - target;
+                const diffStr = (diffNum >= 0 ? '+' : '') + diffNum.toFixed(3) + ' kg';
+                const obsNum = rep.currentObservationIndex;
+
+                rep.readings.push({
+                    obs: obsNum,
+                    target: `${target.toFixed(3)} kg`,
+                    observed: valStr,
+                    diff: diffStr,
+                    source: 'Manual',
+                    status: 'Valid'
+                });
+                rep.currentObservationIndex++;
+                document.getElementById('reading').textContent = valStr;
+                document.getElementById('lastScaleReadingDisplay').textContent = `${valStr} kg`;
+                saveState();
+                logAudit('Manual Entry', `Entered manual observation #${obsNum} (${valStr} kg)`);
+                renderTestWorkspace();
+            }
+        }
+
+        function toggleAutoStream() {
+            const btn = document.getElementById('streamBtn');
+            if (AppState.isStreaming) {
+                clearInterval(AppState.streamTimer);
+                AppState.isStreaming = false;
+                btn.textContent = '▶ Auto-Stream Scale';
+                btn.className = 'btn success';
+                showToast('Scale live streaming stopped', 'info');
+            } else {
+                AppState.isStreaming = true;
+                btn.textContent = '⏸ Pause Stream';
+                btn.className = 'btn danger';
+                showToast('Auto-streaming scale readings active', 'success');
+                AppState.streamTimer = setInterval(() => {
+                    if (document.getElementById('test').classList.contains('active')) {
+                        captureReading();
+                    } else {
+                        clearInterval(AppState.streamTimer);
+                        AppState.isStreaming = false;
+                    }
+                }, 2000);
+            }
+        }
+
+        function deleteObservation(obsIndex) {
+            if (!checkPermissionOrToast('record_obs', 'delete observations')) return;
+            const currentTest = getActiveTest();
+            const rep = currentTest.repeatability;
+            rep.readings = rep.readings.filter(r => r.obs !== obsIndex);
+            rep.currentObservationIndex = Math.min(...rep.readings.map(r => r.obs), obsIndex);
+            saveState();
+            renderTestWorkspace();
+            showToast(`Observation #${obsIndex} deleted`, 'info');
+        }
+
+        function reviewAnomaly() {
+            alert("DISCREPANCY ALERT\n\nClient-side verification algorithm flagged this reading because the error exceeds 5e (0.050 kg). Review scale levelling, drafts, or pan seating before accepting.");
+        }
+
+        function retakeObservation() {
+            const currentTest = getActiveTest();
+            currentTest.repeatability.readings.pop();
+            saveState();
+            renderTestWorkspace();
+            showToast('Flagged observation removed. Retake reading now.', 'warning');
+        }
+
+        function acceptReading() {
+            const currentTest = getActiveTest();
+            const rep = currentTest.repeatability;
+            const last = rep.readings[rep.readings.length - 1];
+            if (last) {
+                last.status = 'Valid';
+                rep.currentObservationIndex++;
+            }
+            saveState();
+            renderTestWorkspace();
+            showToast('Reading accepted by technician override.', 'info');
+        }
+
+        function finishCurrentTest() {
+            const currentTest = getActiveTest();
+            currentTest.status = 'Completed';
+
+            const reportId = `RPT - 2026 - 0${Math.floor(40 + Math.random() * 50)} `;
+            const rep = currentTest.repeatability;
+            const values = rep.readings.map(r => parseFloat(r.observed)).filter(n => !isNaN(n));
+            const max = values.length ? Math.max(...values) : 10.000;
+            const min = values.length ? Math.min(...values) : 10.000;
+            const range = (max - min).toFixed(3);
+            const mean = values.length ? (values.reduce((a, b) => a + b, 0) / values.length).toFixed(3) : '10.000';
+
+            const newReport = {
+                id: reportId,
+                testId: currentTest.id,
+                instrumentId: currentTest.instrumentId,
+                result: 'PASS',
+                signedOff: false,
+                signedBy: null,
+                generatedDate: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+                observationsCount: rep.readings.length,
+                targetLoad: `${rep.targetLoad || '10.000'} kg`,
+                range: `${range} kg`,
+                mean: `${mean} kg`,
+                eccentricityStatus: 'PASS',
+                weighingStatus: 'PASS',
+                zeroTareStatus: 'PASS'
+            };
+
+            AppState.reports.unshift(newReport);
+            saveState();
+            logAudit('Finish Test', `Completed full OIML R - 76 test suite ${currentTest.id} and generated certificate ${reportId} `);
+            showToast(`Test suite complete! Certificate ${reportId} generated.`, 'success');
+            viewReportCertificate(reportId);
+        }
+
+
+        /* --- REPORTS ENGINE & MULTI-TEST CERTIFICATE VIEWER --- */
+
+        function renderReports() {
+            const tbody = document.getElementById('reportsTbody');
+            tbody.innerHTML = '';
+
+            AppState.reports.forEach(rpt => {
+                const tr = document.createElement('tr');
+                const isSigned = rpt.signedOff;
+                tr.innerHTML = `
+                    <td><b>${rpt.id}</b></td>
+                    <td>${rpt.testId}</td>
+                    <td>${rpt.instrumentId}</td>
+                    <td><span class="badge ${rpt.result === 'PASS' ? 'green' : 'red'}">${rpt.result}</span></td>
+                    <td><span class="badge ${isSigned ? 'green' : 'orange'}">${isSigned ? '✔ Signed (' + rpt.signedBy + ')' : 'Pending Sign-off'}</span></td>
+                    <td>${rpt.generatedDate}</td>
+                    <td>
+                        <button class="btn sm primary" onclick="viewReportCertificate('${rpt.id}')">👁 View Certificate</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function viewReportCertificate(reportId) {
+            const rpt = AppState.reports.find(r => r.id === reportId);
+            if (!rpt) return;
+            AppState.viewingReportId = reportId;
+
+            const ins = AppState.instruments.find(i => i.id === rpt.instrumentId) || DEFAULT_INSTRUMENTS[0];
+            const certHtml = `
+                <div style="padding:10px">
+            <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid var(--border);padding-bottom:15px">
+                <div>
+                    <h2 style="font-size:22px">OIML R-76 OFFICIAL TEST CERTIFICATE</h2>
+                    <p class="muted">Non-Automatic Weighing Instrument (NAWI) Legal Verification Report</p>
+                </div>
+                <div style="text-align:right">
+                    <span class="badge ${rpt.result === 'PASS' ? 'green' : 'red'}" style="font-size:16px;padding:6px 14px">${rpt.result}</span>
+                    <div class="small muted" style="margin-top:4px">Cert #${rpt.id}</div>
+                </div>
+            </div>
+
+            <div class="grid grid2" style="margin-top:20px">
+                <div>
+                    <h3>Instrument Specifications</h3>
+                    <table style="margin-top:8px">
+                        <tr><td class="muted">Instrument ID:</td><td><b>${ins.id}</b></td></tr>
+                        <tr><td class="muted">Manufacturer:</td><td>${ins.mfr}</td></tr>
+                        <tr><td class="muted">Model:</td><td>${ins.model}</td></tr>
+                        <tr><td class="muted">Capacity (Max):</td><td>${ins.capacity}</td></tr>
+                        <tr><td class="muted">Scale Interval (e):</td><td>${ins.intervalE}</td></tr>
+                        <tr><td class="muted">Accuracy Class:</td><td>Class ${ins.class}</td></tr>
+                    </table>
+                </div>
+                <div>
+                    <h3>Verification Execution Details</h3>
+                    <table style="margin-top:8px">
+                        <tr><td class="muted">Test Suite ID:</td><td><b>${rpt.testId}</b></td></tr>
+                        <tr><td class="muted">Verification Date:</td><td>${rpt.generatedDate}</td></tr>
+                        <tr><td class="muted">Standard Baseline:</td><td>OIML R-76-1 (2006)</td></tr>
+                        <tr><td class="muted">Environmental Conditions:</td><td>21.5°C / Stable</td></tr>
+                        <tr><td class="muted">Overall Verdict:</td><td><b style="color:var(--success)">PASSED LEGAL METROLOGY</b></td></tr>
+                    </table>
+                </div>
+            </div>
+
+            <div style="margin-top:25px">
+                <h3>OIML R-76 Clause 3.8: Zero-Setting & Tare Device Performance</h3>
+                <table style="margin-top:8px">
+                    <thead><tr><th>Test Item</th><th>Evaluated Error</th><th>Allowed Tolerance</th><th>Evaluation</th></tr></thead>
+                    <tbody>
+                        <tr><td>Initial Zero-Setting Accuracy</td><td>+0.001 kg</td><td>≤ ± 0.25 e (±0.0025 kg)</td><td><span class="badge green">PASS</span></td></tr>
+                        <tr><td>Tare Balancing Operation</td><td>Net Error 0.000 kg</td><td>Net = Gross - Tare</td><td><span class="badge green">PASS</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="margin-top:20px">
+                <h3>OIML R-76 Clause 3.6.1: Repeatability Test</h3>
+                <p class="small muted" style="margin-bottom:8px">Target Test Load: ${rpt.targetLoad} | Observations: 10 readings</p>
+                <table>
+                    <thead><tr><th>Target Load</th><th>Mean Indication</th><th>Range (Max - Min)</th><th>Std Deviation (s)</th><th>MPE Limit</th><th>Status</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td><b>${rpt.targetLoad}</b></td>
+                            <td>${rpt.mean}</td>
+                            <td><b>${rpt.range}</b></td>
+                            <td>0.012 kg</td>
+                            <td>± 0.015 kg (1.5 e)</td>
+                            <td><span class="badge green">PASS</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="margin-top:20px">
+                <h3>OIML R-76 Clause 3.6.2: Eccentricity / Off-Center Loading Test</h3>
+                <p class="small muted" style="margin-bottom:8px">Applied Load: 1/3 Max (10.000 kg) placed across 5 positions</p>
+                <table>
+                    <thead><tr><th>Position</th><th>Target Load</th><th>Observed Indication</th><th>Deviation vs Center</th><th>MPE Limit</th><th>Evaluation</th></tr></thead>
+                    <tbody>
+                        <tr><td>Pos 1: Center</td><td>10.000 kg</td><td>10.001 kg</td><td>0.000 kg</td><td>± 0.015 kg</td><td><span class="badge green">PASS</span></td></tr>
+                        <tr><td>Pos 2: Top-Left (Corner 1)</td><td>10.000 kg</td><td>10.003 kg</td><td>+0.002 kg</td><td>± 0.015 kg</td><td><span class="badge green">PASS</span></td></tr>
+                        <tr><td>Pos 3: Top-Right (Corner 2)</td><td>10.000 kg</td><td>10.002 kg</td><td>+0.001 kg</td><td>± 0.015 kg</td><td><span class="badge green">PASS</span></td></tr>
+                        <tr><td>Pos 4: Bottom-Right (Corner 3)</td><td>10.000 kg</td><td>10.004 kg</td><td>+0.003 kg</td><td>± 0.015 kg</td><td><span class="badge green">PASS</span></td></tr>
+                        <tr><td>Pos 5: Bottom-Left (Corner 4)</td><td>10.000 kg</td><td>10.002 kg</td><td>+0.001 kg</td><td>± 0.015 kg</td><td><span class="badge green">PASS</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="margin-top:20px">
+                <h3>OIML R-76 Clause 3.5.1: Weighing Performance (Accuracy & Hysteresis)</h3>
+                <table>
+                    <thead><tr><th>Load Point</th><th>Direction</th><th>Target Load</th><th>Observed Indication</th><th>Indication Error E</th><th>MPE Bounds</th><th>Status</th></tr></thead>
+                    <tbody>
+                        <tr><td>Min Capacity</td><td>Increasing</td><td>0.200 kg</td><td>0.200 kg</td><td>0.000 kg</td><td>± 0.005 kg (0.5 e)</td><td><span class="badge green">PASS</span></td></tr>
+                        <tr><td>500 e</td><td>Increasing</td><td>5.000 kg</td><td>5.002 kg</td><td>+0.002 kg</td><td>± 0.005 kg (0.5 e)</td><td><span class="badge green">PASS</span></td></tr>
+                        <tr><td>2000 e</td><td>Increasing</td><td>10.000 kg</td><td>10.003 kg</td><td>+0.003 kg</td><td>± 0.010 kg (1.0 e)</td><td><span class="badge green">PASS</span></td></tr>
+                        <tr><td>50% Max</td><td>Increasing</td><td>20.000 kg</td><td>20.005 kg</td><td>+0.005 kg</td><td>± 0.015 kg (1.5 e)</td><td><span class="badge green">PASS</span></td></tr>
+                        <tr><td>100% Max</td><td>Increasing</td><td>30.000 kg</td><td>30.008 kg</td><td>+0.008 kg</td><td>± 0.015 kg (1.5 e)</td><td><span class="badge green">PASS</span></td></tr>
+                        <tr><td>50% Max</td><td>Decreasing</td><td>20.000 kg</td><td>20.004 kg</td><td>+0.004 kg</td><td>± 0.015 kg (1.5 e)</td><td><span class="badge green">PASS</span></td></tr>
+                        <tr><td>2000 e</td><td>Decreasing</td><td>10.000 kg</td><td>10.002 kg</td><td>+0.002 kg</td><td>± 0.010 kg (1.0 e)</td><td><span class="badge green">PASS</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="margin-top:25px">
+                <h3>OIML R-76 Metrological Compliance Declaration</h3>
+                <p class="small muted" style="margin-top:6px;line-height:1.6">
+                    All metrological tests (Zero & Tare, Repeatability, Eccentricity, and Linearity Performance) have been executed in accordance with OIML R-76 recommendations. The maximum observed errors across all test steps remain within maximum permissible error limits for Class III instruments.
+                </p>
+            </div>
+
+            <div style="margin-top:30px;padding:15px;background:#f8fafc;border-radius:8px;border:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+                <div>
+                    <b>Manager Approval & Digital Sign-Off:</b>
+                    <div class="small muted" id="certSignoffText">
+                        ${rpt.signedOff ? `✔ Digitally Signed by ${rpt.signedBy} on ${rpt.generatedDate}` : '⚠️ Awaiting Supervisor Digital Sign-off'}
+                    </div>
+                </div>
+                <div style="font-family:monospace;font-size:11px;color:var(--muted)">
+                    HASH: SHA256-${Math.random().toString(36).substr(2, 9).toUpperCase()}
+                </div>
+            </div>
+            </div>
+        </div>
+            `;
+
+            document.getElementById('certificateContent').innerHTML = certHtml;
+
+            const signBtn = document.getElementById('managerSignoffBtn');
+            if (rpt.signedOff) {
+                signBtn.style.display = 'none';
+            } else {
+                signBtn.style.display = 'inline-flex';
+            }
+
+            openModal('reportViewerModal');
+        }
+
+        function signOffReport() {
+            if (!checkPermissionOrToast('sign_reports', 'sign off reports')) return;
+            const rpt = AppState.reports.find(r => r.id === AppState.viewingReportId);
+            if (rpt) {
+                rpt.signedOff = true;
+                rpt.signedBy = AppState.currentUser.name;
+                saveState();
+                logAudit('Sign Report', `Approved and signed report ${rpt.id} `);
+                showToast(`Report ${rpt.id} digitally signed off by ${AppState.currentUser.name} `, 'success');
+                viewReportCertificate(rpt.id);
+                renderReports();
+            }
+        }
+
+        function exportReportJson() {
+            const rpt = AppState.reports.find(r => r.id === AppState.viewingReportId);
+            if (!rpt) return;
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(rpt, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `${rpt.id} _Certificate.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+
+        /* --- CUSTOMER MANAGEMENT --- */
+
+        function renderCustomers() {
+            const tbody = document.getElementById('customersTbody');
+            tbody.innerHTML = '';
+            AppState.customers.forEach(c => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><b>${c.id}</b></td>
+                    <td>${c.name}</td>
+                    <td>${c.industry}</td>
+                    <td>${c.contact}</td>
+                    <td>${c.equipment}</td>
+                    <td><span class="badge green">${c.status}</span></td>
+                    <td><button class="btn sm" onclick="showToast('Customer profile active','info')">Edit</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function openAddCustomerModal() {
+            if (!checkPermissionOrToast('add_customers', 'add customers')) return;
+            openModal('addCustomerModal');
+        }
+
+        function saveNewCustomer(event) {
+            event.preventDefault();
+            const newCust = {
+                id: `CUST-00${AppState.customers.length + 1} `,
+                name: document.getElementById('custName').value.trim(),
+                industry: document.getElementById('custIndustry').value.trim(),
+                contact: document.getElementById('custContact').value.trim(),
+                equipment: document.getElementById('custEquipment').value.trim(),
+                status: 'Active'
+            };
+            AppState.customers.push(newCust);
+            saveState();
+            closeModal('addCustomerModal');
+            renderCustomers();
+            showToast(`Customer ${newCust.name} added`, 'success');
+            logAudit('Add Customer', `Added customer ${newCust.name} `);
+        }
+
+
+        /* --- AUDIT TRAIL ENGINE --- */
+
+        function renderAuditTrail() {
+            const tbody = document.getElementById('auditTbody');
+            tbody.innerHTML = '';
+            AppState.auditTrail.forEach(log => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><small class="muted">${log.time}</small></td>
+                    <td><b>${log.user}</b></td>
+                    <td><small>${log.role}</small></td>
+                    <td><span class="badge blue">${log.action}</span></td>
+                    <td>${log.details}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function exportAuditLog() {
+            let csv = "Timestamp,User,Role,Action,Details\n";
+            AppState.auditTrail.forEach(l => {
+                csv += `"${l.time}", "${l.user}", "${l.role}", "${l.action}", "${l.details}"\n`;
+            });
+            const dataStr = "data:text/csv;charset=utf-8," + encodeURIComponent(csv);
+            const a = document.createElement('a');
+            a.href = dataStr;
+            a.download = `AuditTrail_${new Date().toISOString().slice(0, 10)}.csv`;
+            a.click();
+        }
+
+
+        /* --- TOAST & MODAL UTILITIES --- */
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<span>${type === 'success' ? '✔' : type === 'error' ? '✖' : 'ℹ'}</span><div>${message}</div>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) modal.classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) modal.classList.remove('active');
+        }
+
+        function toggleScaleConnection() {
+            const dot = document.getElementById('scaleDot');
+            const label = document.getElementById('scaleStatusText');
+            const portLabel = document.getElementById('portLiveLabel');
+            if (dot.classList.contains('red')) {
+                dot.className = 'dot';
+                label.textContent = 'Scale Connected';
+                portLabel.textContent = '● LIVE';
+                portLabel.style.color = 'var(--success)';
+                showToast('RS-232 scale re-connected', 'success');
+            } else {
+                dot.className = 'dot red';
+                label.textContent = 'Scale Offline';
+                portLabel.textContent = 'OFFLINE';
+                portLabel.style.color = 'var(--danger)';
+                showToast('Scale disconnected', 'warning');
+            }
+        }
+
+
+        /* --- INITIALIZATION --- */
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadState();
+            updateRbacUI();
+            renderDashboard();
+            renderInstruments();
+            renderSequence();
+            renderTestWorkspace();
+            renderReports();
+        });
+
+    </script>
+
+</body>
+
+</html>
