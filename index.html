@@ -1144,6 +1144,192 @@
                 grid-template-columns: 1fr
             }
         }
+    
+        /* ===== REFERENCE PROTOTYPE UI — screenshot-matched dashboard ===== */
+        .reference-dashboard{
+            background:#eef8ff;
+            margin:-28px;
+            padding:14px 12px 18px;
+            min-height:calc(100vh - 70px);
+        }
+        .reference-dashboard .ref-section{
+            background:#fff;
+            border:1px solid #dce8f2;
+            border-radius:4px;
+            padding:12px 14px 14px;
+            margin-bottom:12px;
+            box-shadow:0 1px 2px rgba(16,24,40,.03);
+        }
+        .ref-section-title{
+            display:flex;
+            align-items:flex-start;
+            gap:10px;
+            margin-bottom:10px;
+        }
+        .ref-section-title h2{font-size:16px;color:#173b72;margin:1px 0 2px;font-weight:800}
+        .ref-section-title p{font-size:10px;color:#64748b;line-height:1.35}
+        .ref-step{
+            width:39px;height:39px;border-radius:50%;
+            background:#1677e8;color:#fff;display:grid;place-items:center;
+            font-size:21px;font-weight:800;flex:0 0 39px;
+            box-shadow:0 1px 2px rgba(0,0,0,.08)
+        }
+        .device-row{display:grid;grid-template-columns:1.12fr 1fr 1.12fr 1fr 1fr 84px;gap:8px;align-items:stretch}
+        .device-card{
+            min-height:128px;border:1px solid #dce3eb;border-radius:4px;
+            padding:8px 10px;background:#fff;cursor:pointer;position:relative;
+            transition:.15s ease;overflow:hidden
+        }
+        .device-card:hover{border-color:#78aee8;box-shadow:0 2px 8px rgba(23,92,211,.08)}
+        .device-card.selected{border:2px solid #2d8eea;background:#f7fbff}
+        .device-card b{display:block;color:#193a6b;font-size:11px;margin-top:2px}
+        .device-card>span:not(.device-radio):not(.device-check){display:block;font-size:9px;color:#667085;line-height:1.5}
+        .device-top{height:67px;display:flex;align-items:center;justify-content:center;position:relative}
+        .device-check,.device-radio{
+            position:absolute;right:1px;top:0;width:17px;height:17px;border-radius:50%;
+            display:grid;place-items:center;font-size:11px
+        }
+        .device-check{background:#198be8;color:#fff}
+        .device-radio{border:1px solid #cfd7e2;background:#fff}
+        .ref-next-btn{
+            align-self:center;background:#1476df;color:#fff;border:0;border-radius:4px;
+            min-height:38px;font-size:13px;font-weight:700;cursor:pointer
+        }
+        .ref-next-btn:hover{background:#0e61bc}
+        .scale-illustration{position:relative;width:100px;height:62px;filter:drop-shadow(0 2px 2px rgba(0,0,0,.15))}
+        .platform-scale .scale-platform{
+            position:absolute;left:14px;top:26px;width:65px;height:25px;
+            background:linear-gradient(150deg,#d9dee3,#8d959d);transform:skew(-13deg);
+            border-radius:2px;border:1px solid #6d747b
+        }
+        .platform-scale .scale-base{
+            position:absolute;left:29px;top:48px;width:36px;height:6px;background:#505960;border-radius:2px
+        }
+        .platform-scale .scale-post{position:absolute;left:63px;top:14px;width:3px;height:14px;background:#3d4650}
+        .platform-scale .scale-display{position:absolute;left:57px;top:5px;width:17px;height:11px;background:#26313b;border:2px solid #5f6870;border-radius:1px}
+        .bench-scale .bench-body{position:absolute;left:22px;top:23px;width:61px;height:29px;background:linear-gradient(160deg,#e4e7ea,#90979e);clip-path:polygon(10% 0,100% 0,90% 100%,0 85%);border:1px solid #7a838b}
+        .bench-scale .bench-display{position:absolute;left:33px;top:30px;width:20px;height:9px;background:#202a32;border:2px solid #68717a;z-index:2}
+        .truck-scale .truck-deck{position:absolute;left:6px;top:29px;width:88px;height:14px;background:#66717c;border-radius:2px;box-shadow:0 5px 0 #343d45}
+        .truck-scale .truck-leg{position:absolute;top:43px;width:4px;height:14px;background:#3b454d}
+        .truck-scale .l1{left:17px}.truck-scale .l2{right:17px}
+        .dynamic-scale .dyn-frame{position:absolute;left:17px;top:22px;width:68px;height:28px;border:4px solid #33404a;border-radius:3px}
+        .dynamic-scale .dyn-belt{position:absolute;left:21px;top:29px;width:60px;height:10px;background:#89939c}
+        .dynamic-scale .dyn-head{position:absolute;left:58px;top:8px;width:16px;height:13px;background:#2d3740}
+        .load-cell>div{position:absolute;left:37px;top:10px;width:28px;height:43px;border-radius:8px 8px 5px 5px;background:linear-gradient(90deg,#9aa1a7,#e1e3e5,#8e969d);border:1px solid #747b82}
+        .load-cell>div:after{content:"";position:absolute;left:9px;top:12px;width:8px;height:18px;border:1px solid #6e767e;border-radius:50%}
+        .scale-illustration.compact{transform:scale(.88);transform-origin:center}
+        .sequence-panel{
+            display:grid;grid-template-columns:180px 1fr 260px;gap:12px;
+            border:1px solid #e0e8f0;background:#fbfdff;padding:10px
+        }
+        .selected-device-summary{
+            background:#f6fbff;border:1px solid #e1eaf2;border-radius:3px;padding:8px;text-align:left
+        }
+        .summary-scale{height:63px;display:grid;place-items:center}
+        .selected-device-summary h3{font-size:11px;color:#244b82;margin:3px 0}
+        .selected-device-summary p{font-size:9px;color:#667085;line-height:1.5}
+        .device-ready{
+            background:#e8faf3;border:1px solid #bcebd8;border-radius:3px;padding:7px;
+            margin-top:8px;color:#1b8b5a;font-size:10px;font-weight:700
+        }
+        .device-ready small{font-size:9px;font-weight:500;color:#4b806c}
+        .test-sequence-list{padding:2px 0}
+        .sequence-list-head{font-size:11px;font-weight:800;color:#344054;padding:5px 8px 6px}
+        .sequence-list-head span{font-weight:500;color:#667085}
+        .ref-sequence-item{
+            display:grid;grid-template-columns:26px 1fr 72px 62px;align-items:center;gap:7px;
+            min-height:27px;padding:2px 7px;border-bottom:1px solid #edf1f5;font-size:9px
+        }
+        .ref-sequence-item i{
+            width:20px;height:20px;border-radius:50%;background:#1f7de1;color:#fff;
+            display:grid;place-items:center;font-style:normal;font-weight:800
+        }
+        .ref-sequence-item b{font-weight:600;color:#344054}
+        .ref-sequence-item span{color:#667085;text-align:right}
+        .ref-sequence-item em{
+            font-style:normal;text-align:center;background:#eef2f6;color:#8793a1;
+            padding:3px 4px;border-radius:9px;font-size:8px
+        }
+        .test-summary-panel{
+            background:#f6fbff;border:1px solid #e1eaf2;border-radius:3px;padding:10px
+        }
+        .test-summary-panel h3{font-size:11px;color:#344054;margin-bottom:8px}
+        .test-summary-panel>div{
+            display:grid;grid-template-columns:20px 1fr;gap:4px;margin:9px 0;color:#1b78db;font-size:12px
+        }
+        .test-summary-panel>div span{color:#667085;font-size:9px;display:block}
+        .test-summary-panel>div b{grid-column:2;color:#344054;font-size:9px;margin-top:-7px}
+        .pending-pill{background:#eef2f6;color:#667085;padding:3px 8px;border-radius:10px;display:inline-block;width:max-content}
+        .test-summary-panel button{
+            width:100%;background:#21a66a;border:0;color:#fff;padding:9px;border-radius:4px;
+            font-weight:800;font-size:11px;cursor:pointer;margin-top:4px
+        }
+        .test-summary-panel button:hover{background:#168c58}
+        .testing-panel{display:grid;grid-template-columns:1fr 255px;gap:10px}
+        .test-progress{border:1px solid #e0e8f0;background:#fff;padding:10px}
+        .progress-steps{display:grid;grid-template-columns:repeat(8,1fr);gap:3px;border-bottom:1px solid #edf1f5;padding-bottom:9px}
+        .progress-steps>span{
+            text-align:center;color:#667085;font-size:11px;min-width:0
+        }
+        .progress-steps>span.done{color:#23a568}.progress-steps>span.current{color:#1677e8;font-weight:800}
+        .progress-steps small{display:block;font-size:7px;line-height:1.15;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .live-test-card{display:grid;grid-template-columns:78px 1fr 160px;gap:12px;align-items:center;padding:12px 4px 2px}
+        .circular-progress{
+            width:65px;height:65px;border-radius:50%;display:grid;place-items:center;
+            background:conic-gradient(#1b8f72 0 62%,#e8eef3 62% 100%);position:relative
+        }
+        .circular-progress:after{content:"";position:absolute;inset:7px;background:#fff;border-radius:50%}
+        .circular-progress span{position:relative;z-index:1;font-size:13px;font-weight:800;color:#344054}
+        .live-test-info small,.live-reading small{font-size:8px;color:#667085;display:block}
+        .live-test-info b{font-size:10px;color:#344054;display:block;margin:4px 0}
+        .live-test-info b em{font-style:normal;color:#1677e8;font-weight:500;background:#eef6ff;padding:2px 4px;border-radius:3px;margin-left:4px}
+        .live-test-info>span,.live-reading>span{font-size:8px;color:#667085}
+        .mini-progress{height:7px;background:#e6edf3;border-radius:5px;margin-top:8px;overflow:hidden}
+        .mini-progress i{display:block;width:62%;height:100%;background:#1677e8;border-radius:5px}
+        .live-reading{border-left:1px solid #e8edf2;padding-left:13px}
+        .live-reading strong{display:block;font-size:20px;color:#1f2937;margin:4px 0}
+        .report-status{border:1px solid #e0e8f0;background:#f9fcff;padding:10px}
+        .report-status-row{display:grid;grid-template-columns:20px 1fr 50px;gap:5px;align-items:center;padding:7px 0;font-size:9px;border-bottom:1px solid #edf1f5}
+        .report-status-row b{color:#187ce1;font-size:12px}
+        .report-status-row em{font-style:normal;color:#a0a8b2;text-align:right;font-size:8px}
+        .report-status button{width:100%;margin-top:10px;padding:8px;border:0;border-radius:3px;background:#e7edf3;color:#9aa5b2;font-size:9px}
+        .legacy-dashboard-data{display:none}
+
+        /* Align the global shell with the reference image while keeping other screens functional. */
+        .sidebar{width:164px;background:#102f57}
+        .logo{padding:15px 16px;border-bottom:1px solid #29486b}
+        .logo-title{font-size:18px}.logo-sub{font-size:9px;color:#c1d0df}
+        .nav{padding:12px 8px}
+        .nav-section{display:none}
+        .nav-item{padding:10px 11px;margin:2px 0;border-radius:4px;font-size:11px;gap:9px;color:#e2eaf3}
+        .nav-item:hover,.nav-item.active{background:#1c70c8;color:#fff}
+        .user{padding:11px;border-top:1px solid #29486b;background:#12375f}
+        .user-info b{font-size:10px}.user small{font-size:8px}
+        .topbar{height:58px;padding:0 12px 0 18px;border-bottom:1px solid #dbe6ef}
+        .page-title{display:none}
+        .top-actions{margin-left:auto;gap:8px}
+        .top-actions .status,.top-actions .role-badge,.top-actions .btn.primary,.top-actions .btn.sm{display:none}
+        .top-actions:after{
+            content:'Abinaya  •  Administrator  ⌄';white-space:pre;
+            font-size:10px;font-weight:700;color:#344054;background:#fff;padding:8px 10px;border-radius:4px
+        }
+        .content{padding:28px;max-width:none}
+        @media(max-width:1200px){
+            .device-row{grid-template-columns:repeat(3,1fr)}
+            .ref-next-btn{min-height:44px}
+            .sequence-panel{grid-template-columns:160px 1fr}
+            .test-summary-panel{grid-column:1/-1}
+        }
+        @media(max-width:900px){
+            .sidebar{width:64px}.logo-title{font-size:0}.logo-title:first-letter{font-size:20px}
+            .logo-sub,.nav-item span,.user-info{display:none}
+            .content{padding:12px}.reference-dashboard{margin:-12px;padding:10px}
+            .device-row{grid-template-columns:repeat(2,1fr)}
+            .sequence-panel,.testing-panel,.live-test-card{grid-template-columns:1fr}
+            .report-status{grid-column:1}
+            .live-reading{border-left:0;border-top:1px solid #e8edf2;padding:10px 0 0}
+        }
+
     </style>
 </head>
 
@@ -1248,102 +1434,182 @@
 
                 <!-- ================= DASHBOARD ================= -->
 
-                <section id="dashboard" class="screen active">
+                <section id="dashboard" class="screen active reference-dashboard">
 
-                    <div class="hero">
-                        <div>
-                            <h1 id="welcomeHeading">Welcome, Technician</h1>
-                            <p class="muted">Manage NAWI testing, observations and compliance reports with OIML R-76
-                                standard.</p>
+                    <div class="ref-section">
+                        <div class="ref-section-title">
+                            <div class="ref-step">1</div>
+                            <div>
+                                <h2>Select Device to be Licensed</h2>
+                                <p>Choose the weighing machine for which you want to generate a test report as per OIML R-76 standards.</p>
+                            </div>
                         </div>
 
-                        <button class="btn primary" onclick="startNewTestWizard()">
-                            + Start New Test
-                        </button>
+                        <div class="device-row">
+                            <div class="device-card selected" onclick="selectReferenceDevice(this,'NAWI-1042')">
+                                <div class="device-top">
+                                    <div class="scale-illustration platform-scale">
+                                        <div class="scale-display"></div><div class="scale-post"></div><div class="scale-platform"></div><div class="scale-base"></div>
+                                    </div>
+                                    <span class="device-check">✓</span>
+                                </div>
+                                <b>Platform Weighing Scale</b>
+                                <span>Model&nbsp; : METTLER TOLEDO</span>
+                                <span>S/N&nbsp;&nbsp;&nbsp;: MT123456</span>
+                            </div>
+
+                            <div class="device-card" onclick="selectReferenceDevice(this,'NAWI-1020')">
+                                <div class="device-top">
+                                    <div class="scale-illustration bench-scale"><div class="bench-display"></div><div class="bench-body"></div></div>
+                                    <span class="device-radio"></span>
+                                </div>
+                                <b>Bench Scale</b>
+                                <span>Model&nbsp; : Sartorius</span>
+                                <span>S/N&nbsp;&nbsp;&nbsp;: S987654</span>
+                            </div>
+
+                            <div class="device-card" onclick="selectReferenceDevice(this,'NAWI-1051')">
+                                <div class="device-top">
+                                    <div class="scale-illustration truck-scale"><div class="truck-deck"></div><div class="truck-leg l1"></div><div class="truck-leg l2"></div></div>
+                                    <span class="device-radio"></span>
+                                </div>
+                                <b>Truck Scale</b>
+                                <span>Model&nbsp; : Avery Weigh-Tronix</span>
+                                <span>S/N&nbsp;&nbsp;&nbsp;: AVT52288</span>
+                            </div>
+
+                            <div class="device-card demo-device">
+                                <div class="device-top">
+                                    <div class="scale-illustration dynamic-scale"><div class="dyn-frame"></div><div class="dyn-belt"></div><div class="dyn-head"></div></div>
+                                    <span class="device-radio"></span>
+                                </div>
+                                <b>Dynamic Weighing</b>
+                                <span>Model&nbsp; : Minebea Intec</span>
+                                <span>S/N&nbsp;&nbsp;&nbsp;: MI998877</span>
+                            </div>
+
+                            <div class="device-card demo-device">
+                                <div class="device-top">
+                                    <div class="scale-illustration load-cell"><div></div></div>
+                                    <span class="device-radio"></span>
+                                </div>
+                                <b>Load Cell (Standalone)</b>
+                                <span>Model&nbsp; : HBM</span>
+                                <span>S/N&nbsp;&nbsp;&nbsp;: HBW334455</span>
+                            </div>
+
+                            <button class="ref-next-btn" onclick="proceedToSequence()">Next&nbsp; →</button>
+                        </div>
                     </div>
 
-
-                    <div class="grid grid4">
-
-                        <div class="card kpi">
-                            <div class="kpi-label">Active Tests</div>
-                            <div class="kpi-value" id="kpiActiveCount">2</div>
-                            <div class="kpi-footer" id="kpiActiveSub">+1 started today</div>
+                    <div class="ref-section">
+                        <div class="ref-section-title">
+                            <div class="ref-step">2</div>
+                            <div>
+                                <h2>Recommended Test Sequence</h2>
+                                <p>The system will suggest the test sequence as per OIML R-76 for the selected device.</p>
+                            </div>
                         </div>
 
-                        <div class="card kpi">
-                            <div class="kpi-label">Completed Today</div>
-                            <div class="kpi-value" id="kpiCompletedCount">3</div>
-                            <div class="kpi-footer">Local records saved</div>
-                        </div>
+                        <div class="sequence-panel">
+                            <div class="selected-device-summary">
+                                <div class="summary-scale">
+                                    <div class="scale-illustration platform-scale compact">
+                                        <div class="scale-display"></div><div class="scale-post"></div><div class="scale-platform"></div><div class="scale-base"></div>
+                                    </div>
+                                </div>
+                                <h3 id="refDeviceName">Platform Weighing Scale</h3>
+                                <p>Model&nbsp; : METTLER TOLEDO</p>
+                                <p>S/N&nbsp;&nbsp;&nbsp;: MT123456</p>
+                                <div class="device-ready">✓ &nbsp;Device Selected<br><small>Ready to start testing</small></div>
+                            </div>
 
-                        <div class="card kpi">
-                            <div class="kpi-label">Pending Reports</div>
-                            <div class="kpi-value" id="kpiPendingCount">1</div>
-                            <div class="kpi-footer">Ready for manager sign-off</div>
-                        </div>
+                            <div class="test-sequence-list">
+                                <div class="sequence-list-head">Test Sequence <span>(8 Steps)</span></div>
+                                <div class="ref-sequence-item"><i>1</i><b>Preliminary Examination</b><span>~ 15 min</span><em>Pending</em></div>
+                                <div class="ref-sequence-item"><i>2</i><b>Load Cell &amp; Indication Test</b><span>~ 20 min</span><em>Pending</em></div>
+                                <div class="ref-sequence-item"><i>3</i><b>Zero Balance Test</b><span>~ 15 min</span><em>Pending</em></div>
+                                <div class="ref-sequence-item"><i>4</i><b>Eccentricity Test</b><span>~ 30 min</span><em>Pending</em></div>
+                                <div class="ref-sequence-item"><i>5</i><b>Reproducibility Test</b><span>~ 25 min</span><em>Pending</em></div>
+                                <div class="ref-sequence-item"><i>6</i><b>Linearity Test</b><span>~ 30 min</span><em>Pending</em></div>
+                                <div class="ref-sequence-item"><i>7</i><b>Overload Test</b><span>~ 20 min</span><em>Pending</em></div>
+                                <div class="ref-sequence-item"><i>8</i><b>Final Evaluation</b><span>~ 10 min</span><em>Pending</em></div>
+                            </div>
 
-                        <div class="card kpi">
-                            <div class="kpi-label">Instruments Registered</div>
-                            <div class="kpi-value" id="kpiInstrumentsCount">3</div>
-                            <div class="kpi-footer">Ready for testing</div>
+                            <div class="test-summary-panel">
+                                <h3>Test Summary</h3>
+                                <div>▣ <span>Device Type</span><b id="refSummaryDevice">Platform Weighing Scale</b></div>
+                                <div>▤ <span>Standard</span><b>OIML R-76</b></div>
+                                <div>◷ <span>Estimated Time</span><b>~ 2 hr 20 min</b></div>
+                                <div>○ <span>Status</span><b class="pending-pill">Not Started</b></div>
+                                <button onclick="acceptAndStartTest()">▷ &nbsp; Start Test</button>
+                            </div>
                         </div>
-
                     </div>
 
-
-                    <br>
-
-                    <div class="grid grid2">
-
-                        <div class="card">
-
-                            <div class="section-head">
-                                <h2>Active Tests</h2>
-                                <button class="btn sm" onclick="navigateTo('test')">View Active Workspace</button>
+                    <div class="ref-section ref-testing">
+                        <div class="ref-section-title">
+                            <div class="ref-step">3</div>
+                            <div>
+                                <h2>Testing &amp; Report Generation</h2>
+                                <p>The system will automatically perform all tests, analyse the results and generate a detailed report as per OIML R-76.</p>
                             </div>
-
-                            <table>
-
-                                <thead>
-                                    <tr>
-                                        <th>Test ID</th>
-                                        <th>Instrument</th>
-                                        <th>Test Type</th>
-                                        <th>Progress</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody id="dashboardActiveTestsTbody">
-                                    <!-- Populated dynamically -->
-                                </tbody>
-
-                            </table>
-
                         </div>
 
-
-                        <div class="card">
-
-                            <div class="section-head">
-                                <h2>Recent Activity</h2>
-                                <button class="btn sm" onclick="navigateTo('audit')">View Audit Log</button>
+                        <div class="testing-panel">
+                            <div class="test-progress">
+                                <div class="progress-steps">
+                                    <span class="done">✓ <small>Examination</small></span>
+                                    <span class="done">✓ <small>Load Cell &amp; Indication</small></span>
+                                    <span class="done">3 <small>Zero Balance</small></span>
+                                    <span class="current">4 <small>Running<br>Eccentricity</small></span>
+                                    <span>5 <small>Reproducibility</small></span>
+                                    <span>6 <small>Linearity</small></span>
+                                    <span>7 <small>Overload</small></span>
+                                    <span>8 <small>Final</small></span>
+                                </div>
+                                <div class="live-test-card">
+                                    <div class="circular-progress"><span>62%</span></div>
+                                    <div class="live-test-info">
+                                        <small>Current Test</small>
+                                        <b>Eccentricity Test <em>Running...</em></b>
+                                        <span>Measuring at 50% load</span>
+                                        <div class="mini-progress"><i></i></div>
+                                    </div>
+                                    <div class="live-reading">
+                                        <small>⌁ &nbsp; Live Reading</small>
+                                        <strong>10.003 kg</strong>
+                                        <span>Tolerance: ±0.005 kg</span>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div id="recentActivityList" style="line-height:2.3;font-size:13px">
-                                <!-- Populated dynamically -->
+                            <div class="report-status">
+                                <div class="report-status-row"><b>✓</b><span>All Tests Completed</span><em>Pending</em></div>
+                                <div class="report-status-row"><b>▤</b><span>Analysis &amp; Report Generation</span><em>Pending</em></div>
+                                <div class="report-status-row"><b>▤</b><span>Generate Report (DOC)</span><em>Pending</em></div>
+                                <button disabled>▤ &nbsp; Download Report</button>
                             </div>
-
                         </div>
+                    </div>
 
+                    <!-- Hidden compatibility targets used by the existing application state renderer. -->
+                    <div class="legacy-dashboard-data" aria-hidden="true">
+                        <span id="kpiActiveCount">2</span>
+                        <span id="kpiCompletedCount">3</span>
+                        <span id="kpiPendingCount">1</span>
+                        <span id="kpiInstrumentsCount">3</span>
+                        <span id="kpiActiveSub"></span>
+                        <div id="dashboardActiveTestsTbody"></div>
+                        <div id="recentActivityList"></div>
                     </div>
 
                 </section>
 
 
                 <!-- ================= INSTRUMENT ================= -->
+
+
 
                 <section id="instrument" class="screen">
 
@@ -4000,6 +4266,28 @@
             }
         }
 
+
+
+        /* --- REFERENCE DASHBOARD DEVICE SELECTION --- */
+        function selectReferenceDevice(card, instrumentId) {
+            document.querySelectorAll('.device-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            if (instrumentId && AppState.instruments.some(i => i.id === instrumentId)) {
+                AppState.selectedInstrumentId = instrumentId;
+                const ins = AppState.instruments.find(i => i.id === instrumentId);
+                if (ins) {
+                    const name = instrumentId === 'NAWI-1042' ? 'Platform Weighing Scale' :
+                                 instrumentId === 'NAWI-1020' ? 'Bench Scale' :
+                                 instrumentId === 'NAWI-1051' ? 'Truck Scale' : ins.name;
+                    const n = document.getElementById('refDeviceName');
+                    const s = document.getElementById('refSummaryDevice');
+                    if (n) n.textContent = name;
+                    if (s) s.textContent = name;
+                }
+                saveState();
+                showToast('Device selected: ' + instrumentId, 'success');
+            }
+        }
 
         /* --- INITIALIZATION --- */
 
